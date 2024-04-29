@@ -24,6 +24,11 @@ enum Status {
   ACCEPTED
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model User {
   id                        Int                          @id @default(autoincrement())
   name                      String
@@ -31,7 +36,7 @@ model User {
   password                  String
   phone_number              String
   nationality               String
-  gender                    String
+  gender                    Gender
   birthdate                 DateTime
   role                      Role
   skills                    Skill[]
