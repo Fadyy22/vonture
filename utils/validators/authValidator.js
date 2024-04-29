@@ -54,3 +54,13 @@ exports.signupValidator = [
     .withMessage('Role must be either HOST, TOURIST, or ADMIN'),
   validatorMiddleware,
 ];
+
+exports.loginValidator = [
+  check('email')
+    .notEmpty()
+    .withMessage('Please enter your email'),
+  check('password')
+    .notEmpty()
+    .withMessage('Please enter your password'),
+  validatorMiddleware
+];
