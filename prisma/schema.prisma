@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  TOURIST
+  HOST
+  ADMIN
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+}
+
+model User {
+  id                        Int                          @id @default(autoincrement())
+  name                      String
+  email                     String
+  password                  String
+  phone_number              String
+  nationality               String
+  gender                    String
+  birthdate                 DateTime
+  role                      Role
+  skills                    Skill[]
+  hostOpportunities         Opportunity[]
+  place                     Place[]
+  payment                   Payment[]
+  hostTouristReviews        Host_Tourist_Review[]        @relation("HostReviews")
+  touristHostReviews        Host_Tourist_Review[]        @relation("TouristReviews")
+  givenReviews              Host_Tourist_Review[]        @relation("GivenReviews")
+  touristOpportunityReviews Tourist_Opportunity_Review[]
+  touristPlans              Tourist_Plan[]
+  toursitApplications       Tourist_Application[]
+}
+
+model Place {
+  id            Int           @id @default(autoincrement())
+  host          User          @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId        Int
+  name          String
+  pin           String
+  city          String
+  country       String
+  phone_number  String
+  type          String
+  placeMedia    Place_Media[]
+  opportunities Opportunity[]
+}
+
+model Place_Media {
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId Int
+  media   String
+
+  @@id([placeId, media])
+}
+
+model Opportunity {
+  id                 Int                          @id @default(autoincrement())
+  host               User                         @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId             Int
+  place              Place                        @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId            Int
+  description        String
+  availability       String
+  opportunityReviews Tourist_Opportunity_Review[]
+  offers             Offer[]
+  requirements       Requirement[]
+  appliedTourists    Tourist_Application[]
+}
+
+model Plan {
+  id       Int            @id @default(autoincrement())
+  name     String
+  duration String
+  price    Int
+  tourists Tourist_Plan[]
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  tourist   User     @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  touristId Int
+  amount    Int
+  date      DateTime
+}
+
+model Offer {
+  id            Int           @id @default(autoincrement())
+  name          String
+  opportunities Opportunity[]
+}
+
+model Requirement {
+  id            Int           @id @default(autoincrement())
+  name          String
+  opportunities Opportunity[]
+}
+
+model Skill {
+  id       Int    @id @default(autoincrement())
+  name     String
+  tourists User[]
+}
+
+model Host_Tourist_Review {
+  host      User     @relation("HostReviews", fields: [hostId], references: [id], onDelete: Cascade)
+  hostId    Int
+  tourist   User     @relation("TouristReviews", fields: [touristId], references: [id], onDelete: Cascade)
+  touristId Int
+  givenBy   User     @relation("GivenReviews", fields: [givenById], references: [id])
+  givenById Int
+  rating    Float
+  comment   String
+  date      DateTime
+
+  @@id([hostId, touristId, givenById])
+}
+
+model Tourist_Opportunity_Review {
+  tourist       User        @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  touristId     Int
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  opportunityId Int
+  rating        Float
+  comment       String
+  date          DateTime
+
+  @@id([touristId, opportunityId])
+}
+
+model Tourist_Plan {
+  tourist   User     @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  touristId Int
+  plan      Plan     @relation(fields: [planId], references: [id])
+  planId    Int
+  date      DateTime
+
+  @@id([touristId, planId])
+}
+
+model Tourist_Application {
+  tourist       User        @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  touristId     Int
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  opportunityId Int
+  status        Status
+
+  @@id([touristId, opportunityId])
+}
