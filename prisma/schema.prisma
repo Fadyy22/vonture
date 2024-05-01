@@ -162,7 +162,7 @@ model Tourist_Application {
   touristId     Int
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   opportunityId Int
-  status        Status
+  status        Status      @default(PENDING)
 
   @@id([touristId, opportunityId])
 }
