@@ -1,9 +1,6 @@
 const { check } = require('express-validator');
-const { PrismaClient } = require('@prisma/client');
 
 const validatorMiddleware = require('../../middlewares/validatorMiddleware');
-
-const prisma = new PrismaClient();
 
 exports.createPlaceValidator = [
   check('name')
@@ -34,5 +31,12 @@ exports.createPlaceValidator = [
     .withMessage('Type must be a string')
     .isLength({ min: 3, max: 255 })
     .withMessage('Type must be between 3 and 255 characters'),
+  validatorMiddleware
+];
+
+exports.deletePlaceValidator = [
+  check('id')
+    .isNumeric()
+    .withMessage('Id must be a number'),
   validatorMiddleware
 ];
