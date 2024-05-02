@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const prisma = new PrismaClient();
 
 exports.createPlace = asyncHandler(async (req, res, next) => {
+  req.body.hostId = req.user.id;
   const place = await prisma.place.create({
     data: req.body
   });
