@@ -29,7 +29,6 @@ module.exports = asyncHandler(async (req, res, next) => {
     }
   });
 
-  console.log(user);
   if (!user)
     next(new ApiError('The user who belongs to this token does no longer exist.', 401));
 
