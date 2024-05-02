@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
+const { PrismaClient } = require('@prisma/client');
 
 const ApiError = require('../utils/apiError');
 const createToken = require('../utils/createToken');
