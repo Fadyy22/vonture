@@ -21,10 +21,10 @@ exports.deletePlace = asyncHandler(async (req, res, next) => {
   });
 
   if (!place) {
-    throw new ApiError('Place not found', 404);
+    return next(new ApiError('Place not found', 404));
   }
   if (place.hostId !== req.user.id) {
-    throw new ApiError('Unauthorized', 403);
+    return next(new ApiError('Unauthorized', 403));
   }
 
   await prisma.place.delete({
