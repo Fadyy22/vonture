@@ -79,6 +79,7 @@ model Opportunity {
   hostId             Int
   place              Place                        @relation(fields: [placeId], references: [id], onDelete: Cascade)
   placeId            Int
+  title              String
   description        String
   availability       String
   opportunityReviews Tourist_Opportunity_Review[]
