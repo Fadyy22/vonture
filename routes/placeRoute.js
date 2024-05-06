@@ -10,8 +10,8 @@ const {
   deletePlaceValidator,
 } = require('../utils/validators/placeValidator');
 
-const isAuth = require('../middlewares/authMiddleware');
 const allowedTo = require('../middlewares/allowedToMiddleware');
+const isAuth = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 

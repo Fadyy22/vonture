@@ -10,8 +10,8 @@ const {
   deleteOpportunityValidator,
 } = require('../utils/validators/opportunityValidator');
 
-const isAuth = require('../middlewares/authMiddleware');
 const allowedTo = require('../middlewares/allowedToMiddleware');
+const isAuth = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
