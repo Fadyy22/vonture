@@ -21,6 +21,6 @@ router
 
 router
   .route('/:id')
-  .delete(isAuth, allowedTo('HOST'), deleteOpportunity);
+  .delete(isAuth, allowedTo('HOST'), deleteOpportunityValidator, deleteOpportunity);
 
 module.exports = router;
