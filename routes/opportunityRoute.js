@@ -18,6 +18,7 @@ const applicationRoute = require('./applicationRoute');
 const router = express.Router();
 
 router.use('/:id/apply', applicationRoute);
+router.use('/:id/application', applicationRoute);
 
 router
   .route('/')
