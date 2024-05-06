@@ -13,7 +13,11 @@ const {
 const allowedTo = require('../middlewares/allowedToMiddleware');
 const isAuth = require('../middlewares/authMiddleware');
 
+const applicationRoute = require('./applicationRoute');
+
 const router = express.Router();
+
+router.use('/:id/apply', applicationRoute);
 
 router
   .route('/')
