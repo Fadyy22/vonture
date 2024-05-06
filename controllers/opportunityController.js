@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('express-async-handler');
+const { PrismaClient } = require('@prisma/client');
 
 const ApiError = require('../utils/apiError');
 
