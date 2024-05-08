@@ -63,7 +63,10 @@ exports.signupValidator = [
 exports.loginValidator = [
   check('email')
     .notEmpty()
-    .withMessage('Please enter your email')
+    .withMessage('Please enter your email'),
+  check('password')
+    .notEmpty()
+    .withMessage('Please enter your password')
     .custom(async (val, { req }) => {
       const user = await prisma.user.findUnique({
         where: {
@@ -71,7 +74,7 @@ exports.loginValidator = [
         }
       });
 
-      if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+      if (!user || !(await bcrypt.compare(val, user.password))) {
         req.customError = {
           statusCode: 401,
           message: 'Invalid email or password'
@@ -80,8 +83,5 @@ exports.loginValidator = [
       req.user = user;
     }),
   customValidatorMiddleware,
-  check('password')
-    .notEmpty()
-    .withMessage('Please enter your password'),
   globalValidatorMiddleware
 ];
