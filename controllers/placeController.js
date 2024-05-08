@@ -1,8 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { PrismaClient } = require('@prisma/client');
 
-const ApiError = require('../utils/apiError');
-
 const prisma = new PrismaClient();
 
 exports.createPlace = asyncHandler(async (req, res, next) => {
@@ -16,16 +14,6 @@ exports.createPlace = asyncHandler(async (req, res, next) => {
 
 exports.deletePlace = asyncHandler(async (req, res, next) => {
   const id = req.params.id * 1;
-  const place = await prisma.place.findUnique({
-    where: { id }
-  });
-
-  if (!place) {
-    return next(new ApiError('Place not found', 404));
-  }
-  if (place.hostId !== req.user.id) {
-    return next(new ApiError('Unauthorized', 403));
-  }
 
   await prisma.place.delete({
     where: { id }

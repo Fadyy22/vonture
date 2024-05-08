@@ -1,6 +1,10 @@
 const { check } = require('express-validator');
+const { PrismaClient } = require('@prisma/client');
 
-const validatorMiddleware = require('../../middlewares/validatorMiddleware');
+const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
+const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
+
+const prisma = new PrismaClient();
 
 exports.createPlaceValidator = [
   check('name')
@@ -31,12 +35,31 @@ exports.createPlaceValidator = [
     .withMessage('Type must be a string')
     .isLength({ min: 3, max: 255 })
     .withMessage('Type must be between 3 and 255 characters'),
-  validatorMiddleware
+  globalValidatorMiddleware
 ];
 
 exports.deletePlaceValidator = [
   check('id')
     .isNumeric()
-    .withMessage('Id must be a number'),
-  validatorMiddleware
+    .withMessage('Id must be a number')
+    .custom(async (id, { req }) => {
+      const place = await prisma.place.findUnique({
+        where: { id: id * 1 }
+      });
+
+      if (!place) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Place not found'
+        };
+      }
+      if (place.hostId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
 ];
