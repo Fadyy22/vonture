@@ -1,7 +1,9 @@
 const { check } = require('express-validator');
+const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 
-const validatorMiddleware = require('../../middlewares/validatorMiddleware');
+const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
+const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
 
 const prisma = new PrismaClient();
 
@@ -15,17 +17,20 @@ exports.signupValidator = [
     .isEmail()
     .withMessage('Please enter a valid email')
     .bail()
-    .custom(async (val) => {
+    .custom(async (val, { req }) => {
       const user = await prisma.user.findFirst({
         where: {
           email: val
         }
       });
       if (user) {
-        throw new Error('email already exists');
+        req.customError = {
+          statusCode: 409,
+          message: 'Email already exists'
+        };
       }
-      return true;
     }),
+  customValidatorMiddleware,
   check('password')
     .isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
     .withMessage('Password must have a minimum length of 8 characters, with at least one lowercase letter, one uppercase letter, one number, and one special character'),
@@ -52,15 +57,31 @@ exports.signupValidator = [
     .withMessage('Please enter your role')
     .isIn(['HOST', 'TOURIST', 'ADMIN'])
     .withMessage('Role must be either HOST, TOURIST, or ADMIN'),
-  validatorMiddleware,
+  globalValidatorMiddleware,
 ];
 
 exports.loginValidator = [
   check('email')
     .notEmpty()
-    .withMessage('Please enter your email'),
+    .withMessage('Please enter your email')
+    .custom(async (val, { req }) => {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: req.body.email
+        }
+      });
+
+      if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+        req.customError = {
+          statusCode: 401,
+          message: 'Invalid email or password'
+        };
+      }
+      req.user = user;
+    }),
+  customValidatorMiddleware,
   check('password')
     .notEmpty()
     .withMessage('Please enter your password'),
-  validatorMiddleware
+  globalValidatorMiddleware
 ];
