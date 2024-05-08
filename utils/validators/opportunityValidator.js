@@ -1,11 +1,33 @@
 const { check } = require('express-validator');
+const { PrismaClient } = require('@prisma/client');
 
-const validatorMiddleware = require('../../middlewares/validatorMiddleware');
+const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
+const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
+
+const prisma = new PrismaClient();
 
 exports.createOpportunityValidator = [
   check('placeId')
     .isInt()
-    .withMessage('placeId must be an integer'),
+    .withMessage('placeId must be an integer')
+    .custom(async (placeId, { req }) => {
+      const place = await prisma.place.findUnique({
+        where: { id: placeId }
+      });
+      if (!place) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Place not found'
+        };
+      }
+      if (place.hostId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
   check('title')
     .trim()
     .isLength({ min: 1, max: 255 })
@@ -26,12 +48,31 @@ exports.createOpportunityValidator = [
     .optional()
     .isArray()
     .withMessage('Requirements must be an array of ids'),
-  validatorMiddleware
+  globalValidatorMiddleware
 ];
 
 exports.deleteOpportunityValidator = [
   check('id')
     .isInt()
-    .withMessage('id must be an integer'),
-  validatorMiddleware
+    .withMessage('id must be an integer')
+    .custom(async (id, { req }) => {
+      const opportunity = await prisma.opportunity.findUnique({
+        where: { id: id * 1 }
+      });
+
+      if (!opportunity) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Opportunity not found'
+        };
+      }
+      if (opportunity.hostId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
 ];
