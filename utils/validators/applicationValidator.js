@@ -1,7 +1,8 @@
 const { check } = require('express-validator');
 const { PrismaClient } = require('@prisma/client');
 
-const validatorMiddleware = require('../../middlewares/validatorMiddleware');
+const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
+const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
 
 const prisma = new PrismaClient();
 
@@ -10,6 +11,16 @@ exports.createApplicationValidator = [
     .isInt()
     .withMessage('opportunityId must be an integer')
     .custom(async (opportunityId, { req }) => {
+      const opportunity = await prisma.opportunity.findUnique({
+        where: { id: opportunityId * 1 }
+      });
+      if (!opportunity) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Opportunity not found'
+        };
+      }
+
       const appliedBefore = await prisma.tourist_Application.findUnique({
         where: {
           touristId_opportunityId: {
@@ -18,17 +29,44 @@ exports.createApplicationValidator = [
           }
         }
       });
-
       if (appliedBefore) {
-        throw new Error('You have already applied to this opportunity');
+        return req.customError = {
+          statusCode: 409,
+          message: 'You have already applied for this opportunity'
+        };
       }
     }),
-  validatorMiddleware
+  customValidatorMiddleware,
+  globalValidatorMiddleware
 ];
 
 exports.deleteApplicationValidator = [
   check('id')
     .isInt()
-    .withMessage('id must be an integer'),
-  validatorMiddleware
+    .withMessage('id must be an integer')
+    .custom(async (opportunityId, { req }) => {
+      const application = await prisma.tourist_Application.findUnique({
+        where: {
+          touristId_opportunityId: {
+            opportunityId: opportunityId * 1,
+            touristId: req.user.id
+          }
+        }
+      });
+
+      if (!application) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Application not found'
+        };
+      }
+      if (application.touristId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
 ];
