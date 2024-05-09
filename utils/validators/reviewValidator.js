@@ -3,6 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
 const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
+const e = require('express');
 
 const prisma = new PrismaClient();
 
@@ -46,5 +47,36 @@ exports.createOpportunityReviewValidator = [
     .withMessage('comment must be a string')
     .isLength({ min: 1, max: 255 })
     .withMessage('comment must be between 1 and 255 characters'),
+  globalValidatorMiddleware
+];
+
+exports.deleteOpportunityReviewValidator = [
+  check('id')
+    .isInt()
+    .withMessage('opportunityId must be an integer')
+    .bail()
+    .custom(async (opportunityId, { req }) => {
+      const review = await prisma.tourist_Opportunity_Review.findUnique({
+        where: {
+          touristId_opportunityId: {
+            opportunityId: opportunityId * 1,
+            touristId: req.user.id,
+          }
+        }
+      });
+      if (!review) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Review not found'
+        };
+      }
+      if (review.touristId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
   globalValidatorMiddleware
 ];
