@@ -65,6 +65,7 @@ exports.loginValidator = [
   check('password')
     .notEmpty()
     .withMessage('Please enter your password')
+    .bail()
     .custom(async (password, { req }) => {
       const user = await prisma.user.findUnique({
         where: {

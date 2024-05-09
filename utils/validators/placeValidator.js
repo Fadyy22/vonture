@@ -42,6 +42,7 @@ exports.deletePlaceValidator = [
   check('id')
     .isNumeric()
     .withMessage('Id must be a number')
+    .bail()
     .custom(async (id, { req }) => {
       const place = await prisma.place.findUnique({
         where: { id: id * 1 }

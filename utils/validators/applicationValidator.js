@@ -10,6 +10,7 @@ exports.createApplicationValidator = [
   check('id')
     .isInt()
     .withMessage('opportunityId must be an integer')
+    .bail()
     .custom(async (opportunityId, { req }) => {
       const opportunity = await prisma.opportunity.findUnique({
         where: { id: opportunityId * 1 }
@@ -44,6 +45,7 @@ exports.deleteApplicationValidator = [
   check('id')
     .isInt()
     .withMessage('id must be an integer')
+    .bail()
     .custom(async (opportunityId, { req }) => {
       const application = await prisma.tourist_Application.findUnique({
         where: {

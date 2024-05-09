@@ -10,6 +10,7 @@ exports.createOpportunityReviewValidator = [
   check('id')
     .isInt()
     .withMessage('opportunityId must be an integer')
+    .bail()
     .custom(async (opportunityId, { req }) => {
       const opportunity = await prisma.opportunity.findUnique({
         where: { id: opportunityId * 1 }
