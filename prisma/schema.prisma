@@ -49,6 +49,8 @@ model User {
   touristOpportunityReviews Tourist_Opportunity_Review[]
   touristPlans              Tourist_Plan[]
   toursitApplications       Tourist_Application[]
+  createdAt                 DateTime                     @default(now())
+  updatedAt                 DateTime                     @updatedAt
 }
 
 model Place {
@@ -63,12 +65,15 @@ model Place {
   type          String
   placeMedia    Place_Media[]
   opportunities Opportunity[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Place_Media {
-  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
-  placeId Int
-  media   String
+  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId   Int
+  media     String
+  createdAt DateTime @default(now())
 
   @@id([placeId, media])
 }
@@ -86,6 +91,8 @@ model Opportunity {
   offers             Offer[]
   requirements       Requirement[]
   appliedTourists    Tourist_Application[]
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime                     @updatedAt
 }
 
 model Plan {
@@ -101,7 +108,7 @@ model Payment {
   tourist   User     @relation(fields: [touristId], references: [id], onDelete: Cascade)
   touristId Int
   amount    Int
-  date      DateTime
+  createdAt DateTime @default(now())
 }
 
 model Offer {
@@ -131,7 +138,8 @@ model Host_Tourist_Review {
   givenById Int
   rating    Float
   comment   String
-  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([hostId, touristId, givenById])
 }
@@ -143,7 +151,8 @@ model Tourist_Opportunity_Review {
   opportunityId Int
   rating        Float
   comment       String
-  date          DateTime
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@id([touristId, opportunityId])
 }
@@ -153,7 +162,7 @@ model Tourist_Plan {
   touristId Int
   plan      Plan     @relation(fields: [planId], references: [id])
   planId    Int
-  date      DateTime
+  createdAt DateTime @default(now())
 
   @@id([touristId, planId])
 }
@@ -164,6 +173,8 @@ model Tourist_Application {
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   opportunityId Int
   status        Status      @default(PENDING)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@id([touristId, opportunityId])
 }
