@@ -50,6 +50,51 @@ exports.createOpportunityReviewValidator = [
   globalValidatorMiddleware
 ];
 
+exports.createUserReviewValidator = [
+  check('id')
+    .isInt()
+    .withMessage('userId must be an integer')
+    .bail()
+    .custom(async (userId, { req }) => {
+      const user = await prisma.user.findUnique({
+        where: { id: userId * 1 }
+      });
+      if (!user) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'User not found'
+        };
+      }
+
+      const existingReview = await prisma.host_Tourist_Review.findUnique({
+        where: {
+          hostId_touristId_givenById: {
+            givenById: req.user.id,
+            touristId: req.user.role === 'HOST' ? userId * 1 : req.user.id,
+            hostId: req.user.role === 'HOST' ? req.user.id : userId * 1,
+          },
+        },
+      });
+      if (existingReview) {
+        return req.customError = {
+          statusCode: 409,
+          message: `You have already reviewed this ${req.user.role === 'HOST' ? 'tourist' : 'host'}`
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  check('rating')
+    .isFloat({ min: 1, max: 5 })
+    .withMessage('rating must be a number between 1 and 5'),
+  check('comment')
+    .isString()
+    .withMessage('comment must be a string')
+    .isLength({ min: 1, max: 255 })
+    .withMessage('comment must be between 1 and 255 characters'),
+  globalValidatorMiddleware
+
+];
+
 exports.deleteOpportunityReviewValidator = [
   check('id')
     .isInt()
