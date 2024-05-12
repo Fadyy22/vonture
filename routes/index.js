@@ -1,11 +1,11 @@
-const authRoute = require('./authRoute');
-const opportunityRoute = require('./opportunityRoute');
-const placeRoute = require('./placeRoute');
+const authRouter = require('./authRoute');
+const opportunityRouter = require('./opportunityRoute');
+const placeRouter = require('./placeRoute');
 
 const mountRoutes = (app) => {
-  app.use('/auth', authRoute);
-  app.use('/opportunities', opportunityRoute);
-  app.use('/place', placeRoute);
+  app.use('/auth', authRouter);
+  app.use('/opportunities', opportunityRouter);
+  app.use('/place', placeRouter);
 };
 
 module.exports = mountRoutes;
