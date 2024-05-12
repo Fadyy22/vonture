@@ -1,9 +1,10 @@
 const { check } = require('express-validator');
 const { PrismaClient } = require('@prisma/client');
 
-const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
-const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
-
+const {
+  customValidatorMiddleware,
+  globalValidatorMiddleware,
+} = require('../../middlewares/validatorMiddleware');
 const prisma = new PrismaClient();
 
 exports.createOpportunityValidator = [

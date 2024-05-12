@@ -1,9 +1,10 @@
 const { check } = require('express-validator');
 const { PrismaClient } = require('@prisma/client');
 
-const customValidatorMiddleware = require('../../middlewares/customValidatorMiddleware');
-const globalValidatorMiddleware = require('../../middlewares/globalValidatorMiddleware');
-const e = require('express');
+const {
+  customValidatorMiddleware,
+  globalValidatorMiddleware,
+} = require('../../middlewares/validatorMiddleware');
 
 const prisma = new PrismaClient();
 
@@ -92,7 +93,6 @@ exports.createUserReviewValidator = [
     .isLength({ min: 1, max: 255 })
     .withMessage('comment must be between 1 and 255 characters'),
   globalValidatorMiddleware
-
 ];
 
 exports.deleteOpportunityReviewValidator = [
