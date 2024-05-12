@@ -5,6 +5,7 @@ const {
   customValidatorMiddleware,
   globalValidatorMiddleware,
 } = require('../../middlewares/validatorMiddleware');
+
 const prisma = new PrismaClient();
 
 exports.createOpportunityValidator = [
