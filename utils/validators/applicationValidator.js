@@ -43,6 +43,33 @@ exports.createApplicationValidator = [
   globalValidatorMiddleware
 ];
 
+exports.getOpportunityApplicationsValidator = [
+  check('id')
+    .isInt()
+    .withMessage('id must be an integer')
+    .bail()
+    .custom(async (opportunityId, { req }) => {
+      const opportunity = await prisma.opportunity.findUnique({
+        where: { id: opportunityId * 1 }
+      });
+      if (!opportunity) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Opportunity not found'
+        };
+      }
+
+      if (opportunity.hostId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
+];
+
 exports.deleteApplicationValidator = [
   check('id')
     .isInt()
