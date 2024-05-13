@@ -2,6 +2,7 @@ const express = require('express');
 
 const {
   createOpportunity,
+  getAllOpportunities,
   deleteOpportunity,
 } = require('../controllers/opportunityController');
 
@@ -25,7 +26,8 @@ router.use('/:id/review', reviewRouter);
 
 router
   .route('/')
-  .post(isAuth, allowedTo('HOST'), createOpportunityValidator, createOpportunity);
+  .post(isAuth, allowedTo('HOST'), createOpportunityValidator, createOpportunity)
+  .get(getAllOpportunities);
 
 router
   .route('/:id')

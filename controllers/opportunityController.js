@@ -18,6 +18,12 @@ exports.createOpportunity = asyncHandler(async (req, res) => {
   res.status(201).json({ opportunity });
 });
 
+exports.getAllOpportunities = asyncHandler(async (_req, res) => {
+  const opportunities = await prisma.opportunity.findMany({});
+
+  res.status(200).json({ opportunities });
+});
+
 exports.deleteOpportunity = asyncHandler(async (req, res) => {
   await prisma.opportunity.delete({
     where: { id: req.params.id * 1 }
