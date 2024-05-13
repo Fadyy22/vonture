@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-exports.createPlace = asyncHandler(async (req, res, next) => {
+exports.createPlace = asyncHandler(async (req, res) => {
   req.body.hostId = req.user.id;
   const place = await prisma.place.create({
     data: req.body
@@ -12,7 +12,7 @@ exports.createPlace = asyncHandler(async (req, res, next) => {
   res.status(201).json({ place });
 });
 
-exports.deletePlace = asyncHandler(async (req, res, next) => {
+exports.deletePlace = asyncHandler(async (req, res) => {
   const id = req.params.id * 1;
 
   await prisma.place.delete({

@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-exports.createOpportunityReview = asyncHandler(async (req, res, next) => {
+exports.createOpportunityReview = asyncHandler(async (req, res) => {
   const review = await prisma.tourist_Opportunity_Review.create({
     data: {
       opportunityId: req.params.id * 1,
@@ -15,7 +15,7 @@ exports.createOpportunityReview = asyncHandler(async (req, res, next) => {
   res.status(201).json({ review });
 });
 
-exports.createUserReview = asyncHandler(async (req, res, next) => {
+exports.createUserReview = asyncHandler(async (req, res) => {
   req.body.givenById = req.user.id;
   if (req.user.role === 'HOST') {
     req.body.hostId = req.user.id;
@@ -32,7 +32,7 @@ exports.createUserReview = asyncHandler(async (req, res, next) => {
   res.status(201).json({ review });
 });
 
-exports.deleteOpportunityReview = asyncHandler(async (req, res, next) => {
+exports.deleteOpportunityReview = asyncHandler(async (req, res) => {
   await prisma.tourist_Opportunity_Review.delete({
     where: {
       touristId_opportunityId: {

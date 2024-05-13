@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-exports.createOpportunity = asyncHandler(async (req, res, next) => {
+exports.createOpportunity = asyncHandler(async (req, res) => {
   req.body.hostId = req.user.id;
   req.body.requirements = {
     connect: req.body.requirements.map(id => ({ id }))
@@ -18,7 +18,7 @@ exports.createOpportunity = asyncHandler(async (req, res, next) => {
   res.status(201).json({ opportunity });
 });
 
-exports.deleteOpportunity = asyncHandler(async (req, res, next) => {
+exports.deleteOpportunity = asyncHandler(async (req, res) => {
   await prisma.opportunity.delete({
     where: { id: req.params.id * 1 }
   });

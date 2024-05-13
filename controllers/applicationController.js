@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-exports.createApplication = asyncHandler(async (req, res, next) => {
+exports.createApplication = asyncHandler(async (req, res) => {
   const application = await prisma.tourist_Application.create({
     data: {
       opportunityId: req.params.id * 1,
@@ -14,7 +14,7 @@ exports.createApplication = asyncHandler(async (req, res, next) => {
   res.status(201).json({ application });
 });
 
-exports.getOpportunityApplications = asyncHandler(async (req, res, next) => {
+exports.getOpportunityApplications = asyncHandler(async (req, res) => {
   const applications = await prisma.tourist_Application.findMany({
     where: {
       opportunityId: req.params.id * 1,
@@ -39,7 +39,7 @@ exports.getOpportunityApplications = asyncHandler(async (req, res, next) => {
   res.status(200).json({ applications });
 });
 
-exports.deleteApplication = asyncHandler(async (req, res, next) => {
+exports.deleteApplication = asyncHandler(async (req, res) => {
   const opportunityId = req.params.id * 1;
 
   await prisma.tourist_Application.delete({
