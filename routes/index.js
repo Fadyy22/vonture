@@ -5,7 +5,7 @@ const placeRouter = require('./placeRoute');
 const mountRoutes = (app) => {
   app.use('/auth', authRouter);
   app.use('/opportunities', opportunityRouter);
-  app.use('/place', placeRouter);
+  app.use('/places', placeRouter);
 };
 
 module.exports = mountRoutes;
