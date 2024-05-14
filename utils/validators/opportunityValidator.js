@@ -9,13 +9,13 @@ const {
 const prisma = new PrismaClient();
 
 exports.createOpportunityValidator = [
-  check('placeId')
+  check('id')
     .isInt()
     .withMessage('placeId must be an integer')
     .bail()
     .custom(async (placeId, { req }) => {
       const place = await prisma.place.findUnique({
-        where: { id: placeId }
+        where: { id: placeId * 1 }
       });
       if (!place) {
         return req.customError = {

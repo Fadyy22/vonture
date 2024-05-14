@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 exports.createOpportunity = asyncHandler(async (req, res) => {
   req.body.hostId = req.user.id;
+  req.body.placeId = req.params.id * 1;
   req.body.requirements = {
     connect: req.body.requirements.map(id => ({ id }))
   };

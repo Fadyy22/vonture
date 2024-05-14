@@ -13,7 +13,11 @@ const {
 const allowedTo = require('../middlewares/allowedToMiddleware');
 const isAuth = require('../middlewares/authMiddleware');
 
+const opportunityRouter = require('./opportunityRoute');
+
 const router = express.Router();
+
+router.use('/:id/opportunities', opportunityRouter);
 
 router
   .route('/')
