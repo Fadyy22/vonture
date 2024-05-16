@@ -14,10 +14,12 @@ const allowedTo = require('../middlewares/allowedToMiddleware');
 const isAuth = require('../middlewares/authMiddleware');
 
 const opportunityRouter = require('./opportunityRoute');
+const reviewRouter = require('./reviewRoute');
 
 const router = express.Router();
 
 router.use('/:id/opportunities', opportunityRouter);
+router.use('/:id/reviews', reviewRouter);
 
 router
   .route('/')

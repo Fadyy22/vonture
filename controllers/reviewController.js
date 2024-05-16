@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-exports.createOpportunityReview = asyncHandler(async (req, res) => {
+exports.createPlaceReview = asyncHandler(async (req, res) => {
   const review = await prisma.tourist_Opportunity_Review.create({
     data: {
       opportunityId: req.params.id * 1,
@@ -17,13 +17,7 @@ exports.createOpportunityReview = asyncHandler(async (req, res) => {
 
 exports.createUserReview = asyncHandler(async (req, res) => {
   req.body.givenById = req.user.id;
-  if (req.user.role === 'HOST') {
-    req.body.hostId = req.user.id;
-    req.body.touristId = req.params.id * 1;
-  } else {
-    req.body.touristId = req.user.id;
-    req.body.hostId = req.params.id * 1;
-  }
+  req.body.receivedById = req.params.id * 1;
 
   const review = await prisma.host_Tourist_Review.create({
     data: req.body

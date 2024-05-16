@@ -39,10 +39,12 @@ exports.createOpportunityValidator = [
     .trim()
     .isLength({ min: 1, max: 255 })
     .withMessage('Description must be between 1 and 255 characters'),
-  check('availability')
-    .trim()
-    .isLength({ min: 1, max: 255 })
-    .withMessage('Availability must be between 1 and 255 characters'),
+  check('from')
+    .isDate({ format: 'YYYY-MM-DD' })
+    .withMessage('Must be a date in YYYY-MM-DD format'),
+  check('to')
+    .isDate({ format: 'YYYY-MM-DD' })
+    .withMessage('Must be a date in YYYY-MM-DD format'),
   check('offers')
     .optional()
     .isArray()

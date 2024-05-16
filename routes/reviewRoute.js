@@ -1,14 +1,12 @@
 const express = require('express');
 
 const {
-  createOpportunityReview,
-  createUserReview,
+  createPlaceReview,
   deleteOpportunityReview,
 } = require('../controllers/reviewController');
 
 const {
-  createOpportunityReviewValidator,
-  createUserReviewValidator,
+  createPlaceReviewValidator,
   deleteOpportunityReviewValidator,
 } = require('../utils/validators/reviewValidator');
 
@@ -19,11 +17,7 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(isAuth, allowedTo('TOURIST'), createOpportunityReviewValidator, createOpportunityReview)
+  .post(isAuth, allowedTo('TOURIST'), createPlaceReviewValidator, createPlaceReview)
   .delete(isAuth, allowedTo('TOURIST'), deleteOpportunityReviewValidator, deleteOpportunityReview);
-
-router
-  .route('/user/:id/review')
-  .post(isAuth, allowedTo('TOURIST', 'HOST'), createUserReviewValidator, createUserReview);
 
 module.exports = router;

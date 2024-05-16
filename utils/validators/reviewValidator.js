@@ -8,34 +8,34 @@ const {
 
 const prisma = new PrismaClient();
 
-exports.createOpportunityReviewValidator = [
+exports.createPlaceReviewValidator = [
   check('id')
     .isInt()
-    .withMessage('opportunityId must be an integer')
+    .withMessage('placeId must be an integer')
     .bail()
-    .custom(async (opportunityId, { req }) => {
-      const opportunity = await prisma.opportunity.findUnique({
-        where: { id: opportunityId * 1 }
+    .custom(async (placeId, { req }) => {
+      const opportunity = await prisma.place.findUnique({
+        where: { id: placeId * 1 }
       });
       if (!opportunity) {
         return req.customError = {
           statusCode: 404,
-          message: 'Opportunity not found'
+          message: 'Place not found'
         };
       }
 
-      const existingReview = await prisma.tourist_Opportunity_Review.findUnique({
+      const existingReview = await prisma.tourist_Place_Review.findUnique({
         where: {
-          touristId_opportunityId: {
+          touristId_placeId: {
+            placeId: placeId * 1,
             touristId: req.user.id,
-            opportunityId: opportunityId * 1,
-          }
-        }
+          },
+        },
       });
       if (existingReview) {
         return req.customError = {
           statusCode: 409,
-          message: 'You have already reviewed this opportunity'
+          message: 'You have already reviewed this place'
         };
       }
     }),
@@ -69,11 +69,10 @@ exports.createUserReviewValidator = [
 
       const existingReview = await prisma.host_Tourist_Review.findUnique({
         where: {
-          hostId_touristId_givenById: {
+          receivedById_givenById: {
+            receivedById: userId * 1,
             givenById: req.user.id,
-            touristId: req.user.role === 'HOST' ? userId * 1 : req.user.id,
-            hostId: req.user.role === 'HOST' ? req.user.id : userId * 1,
-          },
+          }
         },
       });
       if (existingReview) {
