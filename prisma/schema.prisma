@@ -31,43 +31,46 @@ enum Gender {
 }
 
 model User {
-  id                        Int                          @id @default(autoincrement())
-  name                      String
-  email                     String                       @unique
-  password                  String
-  phone_number              String
-  nationality               String
-  gender                    Gender
-  birthdate                 DateTime
-  role                      Role
-  skills                    Skill[]
-  hostOpportunities         Opportunity[]
-  place                     Place[]
-  payment                   Payment[]
-  hostTouristReviews        Host_Tourist_Review[]        @relation("HostReviews")
-  touristHostReviews        Host_Tourist_Review[]        @relation("TouristReviews")
-  givenReviews              Host_Tourist_Review[]        @relation("GivenReviews")
-  touristOpportunityReviews Tourist_Opportunity_Review[]
-  touristPlans              Tourist_Plan[]
-  toursitApplications       Tourist_Application[]
-  createdAt                 DateTime                     @default(now())
-  updatedAt                 DateTime                     @updatedAt
+  id                  Int                    @id @default(autoincrement())
+  name                String
+  email               String                 @unique
+  password            String
+  phone_number        String
+  nationality         String
+  bio                 String
+  gender              Gender
+  birthdate           DateTime
+  role                Role
+  rating              Float                  @default(0)
+  skills              Skill[]
+  hostOpportunities   Opportunity[]
+  place               Place[]
+  payment             Payment[]
+  receivedReviews     Host_Tourist_Review[]  @relation("receivedReviews")
+  givenReviews        Host_Tourist_Review[]  @relation("givenReviews")
+  touristPlaceReviews Tourist_Place_Review[]
+  touristPlans        Tourist_Plan[]
+  toursitApplications Tourist_Application[]
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
 }
 
 model Place {
-  id            Int           @id @default(autoincrement())
-  host          User          @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  hostId        Int
-  name          String
-  pin           String
-  city          String
-  country       String
-  phone_number  String
-  type          String
-  placeMedia    Place_Media[]
-  opportunities Opportunity[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id             Int                    @id @default(autoincrement())
+  host           User                   @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId         Int
+  name           String
+  pin            String
+  city           String
+  country        String
+  phone_number   String
+  rating         Float                  @default(0)
+  type           String
+  placeMedia     Place_Media[]
+  opportunities  Opportunity[]
+  touristReviews Tourist_Place_Review[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
 }
 
 model Place_Media {
@@ -80,20 +83,20 @@ model Place_Media {
 }
 
 model Opportunity {
-  id                 Int                          @id @default(autoincrement())
-  host               User                         @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  hostId             Int
-  place              Place                        @relation(fields: [placeId], references: [id], onDelete: Cascade)
-  placeId            Int
-  title              String
-  description        String
-  availability       String
-  opportunityReviews Tourist_Opportunity_Review[]
-  offers             Offer[]
-  requirements       Requirement[]
-  appliedTourists    Tourist_Application[]
-  createdAt          DateTime                     @default(now())
-  updatedAt          DateTime                     @updatedAt
+  id              Int                   @id @default(autoincrement())
+  host            User                  @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId          Int
+  place           Place                 @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId         Int
+  title           String
+  description     String
+  from            DateTime
+  to              DateTime
+  offers          Offer[]
+  requirements    Requirement[]
+  appliedTourists Tourist_Application[]
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 }
 
 model Plan {
@@ -131,31 +134,29 @@ model Skill {
 }
 
 model Host_Tourist_Review {
-  host      User     @relation("HostReviews", fields: [hostId], references: [id], onDelete: Cascade)
-  hostId    Int
-  tourist   User     @relation("TouristReviews", fields: [touristId], references: [id], onDelete: Cascade)
+  receivedBy   User     @relation("receivedReviews", fields: [receivedById], references: [id], onDelete: Cascade)
+  receivedById Int
+  givenBy      User     @relation("givenReviews", fields: [givenById], references: [id], onDelete: Cascade)
+  givenById    Int
+  rating       Float
+  comment      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@id([receivedById, givenById])
+}
+
+model Tourist_Place_Review {
+  tourist   User     @relation(fields: [touristId], references: [id], onDelete: Cascade)
   touristId Int
-  givenBy   User     @relation("GivenReviews", fields: [givenById], references: [id])
-  givenById Int
+  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId   Int
   rating    Float
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([hostId, touristId, givenById])
-}
-
-model Tourist_Opportunity_Review {
-  tourist       User        @relation(fields: [touristId], references: [id], onDelete: Cascade)
-  touristId     Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  opportunityId Int
-  rating        Float
-  comment       String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  @@id([touristId, opportunityId])
+  @@id([touristId, placeId])
 }
 
 model Tourist_Plan {
