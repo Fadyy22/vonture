@@ -10,11 +10,16 @@ const {
 const prisma = new PrismaClient();
 
 exports.signupValidator = [
-  check('name')
+  check('first_name')
     .notEmpty()
-    .withMessage('Please enter your name')
+    .withMessage('Please enter your first name')
     .isString()
-    .withMessage('Please enter your name with only characters'),
+    .withMessage('Please enter your first name with only characters'),
+  check('last_name')
+    .notEmpty()
+    .withMessage('Please enter your last name')
+    .isString()
+    .withMessage('Please enter your last name with only characters'),
   check('email')
     .isEmail()
     .withMessage('Please enter a valid email')
