@@ -42,6 +42,10 @@ exports.signupValidator = [
     .withMessage('Please enter your nationality')
     .isString()
     .withMessage('Nationality must be only characters'),
+  check('bio')
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage('Bio must be between 1 and 255 characters'),
   check('gender')
     .notEmpty()
     .withMessage('Please enter your gender')
