@@ -32,7 +32,8 @@ enum Gender {
 
 model User {
   id                  Int                    @id @default(autoincrement())
-  name                String
+  first_name          String
+  last_name           String
   email               String                 @unique
   password            String
   phone_number        String
