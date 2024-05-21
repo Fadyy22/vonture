@@ -19,7 +19,13 @@ enum Role {
   ADMIN
 }
 
-enum Status {
+enum OpportunityStatus {
+  OPEN
+  CLOSED
+}
+
+enum ApplicationStatus {
+  APPLIED
   PENDING
   ACCEPTED
   REJECTED
@@ -93,6 +99,7 @@ model Opportunity {
   description     String
   from            DateTime
   to              DateTime
+  status          OpportunityStatus     @default(OPEN)
   offers          Offer[]
   requirements    Requirement[]
   appliedTourists Tourist_Application[]
@@ -171,13 +178,13 @@ model Tourist_Plan {
 }
 
 model Tourist_Application {
-  tourist       User        @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  tourist       User              @relation(fields: [touristId], references: [id], onDelete: Cascade)
   touristId     Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  opportunity   Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   opportunityId Int
-  status        Status      @default(PENDING)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  status        ApplicationStatus @default(APPLIED)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@id([touristId, opportunityId])
 }
