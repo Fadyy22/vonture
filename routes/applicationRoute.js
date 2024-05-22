@@ -4,12 +4,16 @@ const {
   createApplication,
   getOpportunityApplications,
   deleteApplication,
+  acceptApplication,
+  rejectApplication,
 } = require('../controllers/applicationController');
 
 const {
   createApplicationValidator,
   getOpportunityApplicationsValidator,
   deleteApplicationValidator,
+  acceptApplicationValidator,
+  rejectApplicationValidator,
 } = require('../utils/validators/applicationValidator');
 
 
@@ -23,5 +27,8 @@ router.
   .post(isAuth, allowedTo('TOURIST'), createApplicationValidator, createApplication)
   .get(isAuth, allowedTo('HOST'), getOpportunityApplicationsValidator, getOpportunityApplications)
   .delete(isAuth, allowedTo('TOURIST'), deleteApplicationValidator, deleteApplication);
+
+router.put('/accept', isAuth, allowedTo('HOST'), acceptApplicationValidator, acceptApplication);
+router.put('/reject', isAuth, allowedTo('HOST'), rejectApplicationValidator, rejectApplication);
 
 module.exports = router;

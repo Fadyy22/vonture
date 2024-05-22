@@ -57,3 +57,35 @@ exports.deleteApplication = asyncHandler(async (req, res) => {
 
   res.status(204).json();
 });
+
+exports.acceptApplication = asyncHandler(async (req, res) => {
+  await prisma.tourist_Application.update({
+    where: {
+      touristId_opportunityId: {
+        opportunityId: req.body.opportunityId,
+        touristId: req.body.touristId
+      }
+    },
+    data: {
+      status: 'PENDING',
+    }
+  });
+
+  res.status(200).json();
+});
+
+exports.rejectApplication = asyncHandler(async (req, res) => {
+  await prisma.tourist_Application.update({
+    where: {
+      touristId_opportunityId: {
+        opportunityId: req.body.opportunityId,
+        touristId: req.body.touristId
+      }
+    },
+    data: {
+      status: 'REJECTED',
+    }
+  });
+
+  res.status(200).json();
+});

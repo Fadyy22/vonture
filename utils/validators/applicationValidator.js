@@ -101,3 +101,87 @@ exports.deleteApplicationValidator = [
   customValidatorMiddleware,
   globalValidatorMiddleware
 ];
+
+exports.acceptApplicationValidator = [
+  check('opportunityId')
+    .isInt()
+    .withMessage('opportunityId must be an integer'),
+  check('touristId')
+    .isInt()
+    .withMessage('touristId must be an integer')
+    .bail()
+    .custom(async (touristId, { req }) => {
+      const application = await prisma.tourist_Application.findUnique({
+        where: {
+          touristId_opportunityId: {
+            opportunityId: req.body.opportunityId,
+            touristId,
+          },
+        },
+        include: {
+          opportunity: {
+            select: {
+              hostId: true
+            },
+          },
+        },
+      });
+      if (!application) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Application not found'
+        };
+      }
+
+      if (application.opportunity.hostId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
+];
+
+exports.rejectApplicationValidator = [
+  check('opportunityId')
+    .isInt()
+    .withMessage('opportunityId must be an integer'),
+  check('touristId')
+    .isInt()
+    .withMessage('touristId must be an integer')
+    .bail()
+    .custom(async (touristId, { req }) => {
+      const application = await prisma.tourist_Application.findUnique({
+        where: {
+          touristId_opportunityId: {
+            opportunityId: req.body.opportunityId,
+            touristId,
+          },
+        },
+        include: {
+          opportunity: {
+            select: {
+              hostId: true
+            },
+          },
+        },
+      });
+      if (!application) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Application not found'
+        };
+      }
+
+      if (application.opportunity.hostId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
+];
