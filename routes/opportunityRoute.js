@@ -16,7 +16,7 @@ const isAuth = require('../middlewares/authMiddleware');
 
 const applicationRouter = require('./applicationRoute');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use('/:id/apply', applicationRouter); // POST /opportunities/:id/apply
 router.use('/:id/applications', applicationRouter); // GET /opportunities/:id/applications
