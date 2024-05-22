@@ -14,13 +14,43 @@ exports.createPlaceReviewValidator = [
     .withMessage('placeId must be an integer')
     .bail()
     .custom(async (placeId, { req }) => {
-      const opportunity = await prisma.place.findUnique({
-        where: { id: placeId * 1 }
+      const place = await prisma.place.findUnique({
+        where: { id: placeId * 1 },
+        include: {
+          opportunities: {
+            select: { id: true }
+          }
+        }
       });
-      if (!opportunity) {
+      if (!place) {
         return req.customError = {
           statusCode: 404,
           message: 'Place not found'
+        };
+      }
+
+      const hasApplied = await prisma.tourist_Application.findFirst({
+        where: {
+          AND: [
+            {
+              opportunityId: {
+                in: place.opportunities.map(opportunity => opportunity.id)
+              }
+            },
+            {
+              touristId: req.user.id
+            },
+            {
+              status: 'ACCEPTED'
+            }
+          ]
+        }
+      });
+
+      if (!hasApplied) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'You must apply and be accepted for an opportunity before reviewing a place'
         };
       }
 
