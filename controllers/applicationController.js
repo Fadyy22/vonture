@@ -15,28 +15,32 @@ exports.createApplication = asyncHandler(async (req, res) => {
 });
 
 exports.getOpportunityApplications = asyncHandler(async (req, res) => {
-  const applications = await prisma.tourist_Application.findMany({
+  const applications = await prisma.opportunity.findUnique({
     where: {
-      opportunityId: req.params.id * 1,
+      id: req.params.id * 1
     },
     select: {
-      tourist: {
+      appliedTourists: {
         select: {
-          id: true,
-          name: true,
-          email: true,
-          phone_number: true,
-          nationality: true,
-          gender: true,
-          birthdate: true,
+          tourist: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+              gender: true,
+              nationality: true,
+              birthdate: true,
+            }
+          },
+          status: true,
+          createdAt: true,
         }
-      },
-      status: true,
-      createdAt: true,
-    },
+      }
+    }
   });
 
-  res.status(200).json({ applications });
+  res.status(200).json({ applications: applications.appliedTourists });
 });
 
 exports.deleteApplication = asyncHandler(async (req, res) => {
