@@ -18,5 +18,5 @@ exports.singup = asyncHandler(async (req, res) => {
 
 exports.login = asyncHandler(async (req, res) => {
   const token = createToken(req.user.id);
-  res.status(200).json({ token });
+  res.status(200).json({ user: req.user, token });
 });
