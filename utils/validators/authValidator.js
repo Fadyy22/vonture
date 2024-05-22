@@ -60,7 +60,8 @@ exports.signupValidator = [
     .notEmpty()
     .withMessage('Please enter your birth date.')
     .isDate({ format: 'YYYY-MM-DD' })
-    .withMessage('Please enter your birth date in YYYY-MM-DD format'),
+    .withMessage('Please enter your birth date in YYYY-MM-DD format')
+    .customSanitizer(birthdate => new Date(birthdate).toISOString()),
   check('role')
     .notEmpty()
     .withMessage('Please enter your role')
