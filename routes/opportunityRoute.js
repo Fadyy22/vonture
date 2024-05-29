@@ -3,6 +3,7 @@ const express = require('express');
 const {
   createOpportunity,
   getAllOpportunities,
+  getOpportunity,
   deleteOpportunity,
 } = require('../controllers/opportunityController');
 
@@ -29,6 +30,7 @@ router
 
 router
   .route('/:id')
+  .get(getOpportunity)
   .delete(isAuth, allowedTo('HOST'), deleteOpportunityValidator, deleteOpportunity);
 
 module.exports = router;

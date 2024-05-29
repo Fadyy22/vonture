@@ -52,6 +52,41 @@ exports.getAllOpportunities = asyncHandler(async (_req, res) => {
   res.status(200).json({ opportunities });
 });
 
+exports.getOpportunity = asyncHandler(async (req, res) => {
+  const opportunity = await prisma.opportunity.findUnique({
+    where: { id: req.params.id * 1 },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      from: true,
+      to: true,
+      createdAt: true,
+      place: {
+        select: {
+          id: true,
+          name: true,
+          pin: true,
+          city: true,
+          country: true,
+          phone_number: true,
+          rating: true,
+        }
+      },
+      host: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          rating: true,
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ opportunity });
+});
+
 exports.deleteOpportunity = asyncHandler(async (req, res) => {
   await prisma.opportunity.delete({
     where: { id: req.params.id * 1 }
