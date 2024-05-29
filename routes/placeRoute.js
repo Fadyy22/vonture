@@ -2,6 +2,7 @@ const express = require('express');
 
 const {
   createPlace,
+  getAllPlaces,
   deletePlace,
 } = require('../controllers/placeController');
 
@@ -23,7 +24,8 @@ router.use('/:id/reviews', reviewRouter);
 
 router
   .route('/')
-  .post(isAuth, allowedTo('HOST'), createPlaceValidator, createPlace);
+  .post(isAuth, allowedTo('HOST'), createPlaceValidator, createPlace)
+  .get(getAllPlaces);
 
 router
   .route('/:id')
