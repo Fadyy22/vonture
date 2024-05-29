@@ -12,6 +12,25 @@ exports.createPlaceReview = asyncHandler(async (req, res) => {
     }
   });
 
+  const reviewsAvg = await prisma.tourist_Place_Review.aggregate({
+    where: {
+      placeId: req.params.id * 1,
+    },
+    _avg: {
+      rating: true,
+    },
+  });
+
+  await prisma.place.update({
+    where: { id: req.params.id * 1 },
+    data: {
+      rating: {
+        set: reviewsAvg._avg.rating,
+      },
+    },
+  });
+
+
   res.status(201).json({ review });
 });
 
