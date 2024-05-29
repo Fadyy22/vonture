@@ -20,7 +20,34 @@ exports.createOpportunity = asyncHandler(async (req, res) => {
 });
 
 exports.getAllOpportunities = asyncHandler(async (_req, res) => {
-  const opportunities = await prisma.opportunity.findMany({});
+  const opportunities = await prisma.opportunity.findMany({
+    where: { status: 'OPEN' },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      from: true,
+      to: true,
+      createdAt: true,
+      place: {
+        select: {
+          id: true,
+          name: true,
+          city: true,
+          country: true,
+          rating: true,
+        }
+      },
+      host: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          rating: true,
+        }
+      }
+    }
+  });
 
   res.status(200).json({ opportunities });
 });
