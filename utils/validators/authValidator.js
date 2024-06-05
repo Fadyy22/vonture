@@ -77,8 +77,8 @@ exports.signupValidator = [
     .notEmpty()
     .withMessage('Please enter your role')
     .toUpperCase()
-    .isIn(['HOST', 'TOURIST', 'ADMIN'])
-    .withMessage('Role must be either HOST, TOURIST, or ADMIN'),
+    .isIn(['HOST', 'TOURIST'])
+    .withMessage('Role must be either HOST or TOURIST'),
   globalValidatorMiddleware,
 ];
 
