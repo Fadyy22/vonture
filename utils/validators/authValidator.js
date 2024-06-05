@@ -11,21 +11,24 @@ const prisma = new PrismaClient();
 
 exports.signupValidator = [
   check('first_name')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your first name')
     .isString()
     .withMessage('Please enter your first name with only characters'),
   check('last_name')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your last name')
     .isString()
     .withMessage('Please enter your last name with only characters'),
   check('email')
+    .trim()
     .isEmail()
     .withMessage('Please enter a valid email')
     .bail()
     .custom(async (email, { req }) => {
-      const user = await prisma.user.findFirst({
+      const user = await prisma.user.findUnique({
         where: { email }
       });
       if (user) {
@@ -37,12 +40,16 @@ exports.signupValidator = [
     }),
   customValidatorMiddleware,
   check('password')
+    .trim()
     .isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
-    .withMessage('Password must have a minimum length of 8 characters, with at least one lowercase letter, one uppercase letter, one number, and one special character'),
+    .withMessage('Password must have a minimum length of 8 characters, with at least one lowercase letter, one uppercase letter, one number, and one special character')
+    .customSanitizer(password => bcrypt.hashSync(password, 12)),
   check('phone_number')
+    .trim()
     .isMobilePhone()
     .withMessage('Please enter a valid mobile number'),
   check('nationality')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your nationality')
     .isString()
@@ -52,19 +59,24 @@ exports.signupValidator = [
     .isLength({ min: 1, max: 255 })
     .withMessage('Bio must be between 1 and 255 characters'),
   check('gender')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your gender')
+    .toUpperCase()
     .isIn(['MALE', 'FEMALE'])
     .withMessage('Gender must be either MALE or FEMALE'),
   check('birthdate')
+    .trim()
     .notEmpty()
-    .withMessage('Please enter your birth date.')
+    .withMessage('Please enter your birth date')
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Please enter your birth date in YYYY-MM-DD format')
     .customSanitizer(birthdate => new Date(birthdate).toISOString()),
   check('role')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your role')
+    .toUpperCase()
     .isIn(['HOST', 'TOURIST', 'ADMIN'])
     .withMessage('Role must be either HOST, TOURIST, or ADMIN'),
   globalValidatorMiddleware,
@@ -72,9 +84,11 @@ exports.signupValidator = [
 
 exports.loginValidator = [
   check('email')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your email'),
   check('password')
+    .trim()
     .notEmpty()
     .withMessage('Please enter your password')
     .bail()
