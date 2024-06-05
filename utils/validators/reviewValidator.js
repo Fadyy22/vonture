@@ -74,6 +74,7 @@ exports.createPlaceReviewValidator = [
     .isFloat({ min: 1, max: 5 })
     .withMessage('rating must be a number between 1 and 5'),
   check('comment')
+    .trim()
     .isString()
     .withMessage('comment must be a string')
     .isLength({ min: 1, max: 255 })
@@ -117,6 +118,7 @@ exports.createUserReviewValidator = [
     .isFloat({ min: 1, max: 5 })
     .withMessage('rating must be a number between 1 and 5'),
   check('comment')
+    .trim()
     .isString()
     .withMessage('comment must be a string')
     .isLength({ min: 1, max: 255 })

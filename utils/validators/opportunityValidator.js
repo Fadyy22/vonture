@@ -40,10 +40,12 @@ exports.createOpportunityValidator = [
     .isLength({ min: 1, max: 255 })
     .withMessage('Description must be between 1 and 255 characters'),
   check('from')
+    .trim()
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Must be a date in YYYY-MM-DD format')
     .customSanitizer(from => new Date(from).toISOString()),
   check('to')
+    .trim()
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Must be a date in YYYY-MM-DD format')
     .customSanitizer(to => new Date(to).toISOString()),
