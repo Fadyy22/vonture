@@ -1,5 +1,4 @@
 const asyncHandler = require('express-async-handler');
-const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 
 const createToken = require('../utils/createToken');
@@ -7,7 +6,6 @@ const createToken = require('../utils/createToken');
 const prisma = new PrismaClient();
 
 exports.singup = asyncHandler(async (req, res) => {
-  req.body.password = await bcrypt.hash(req.body.password, 12);
   const user = await prisma.user.create({
     data: req.body
   });
