@@ -3,6 +3,20 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+exports.createSearchObj = (req, res, next) => {
+  const search = req.query.search;
+  req.searchObj = search ? {
+    OR: [
+      { title: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+      { place: { name: { contains: search, mode: 'insensitive' } } },
+      { place: { city: { contains: search, mode: 'insensitive' } } },
+      { place: { country: { contains: search, mode: 'insensitive' } } },
+    ]
+  } : {};
+  next();
+};
+
 exports.createOpportunity = asyncHandler(async (req, res) => {
   req.body.hostId = req.user.id;
   req.body.placeId = req.params.id * 1;
@@ -19,9 +33,12 @@ exports.createOpportunity = asyncHandler(async (req, res) => {
   res.status(201).json({ opportunity });
 });
 
-exports.getAllOpportunities = asyncHandler(async (_req, res) => {
+exports.getAllOpportunities = asyncHandler(async (req, res) => {
   const opportunities = await prisma.opportunity.findMany({
-    where: { status: 'OPEN' },
+    where: {
+      status: 'OPEN',
+      ...req.searchObj,
+    },
     select: {
       id: true,
       title: true,
