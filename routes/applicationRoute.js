@@ -3,6 +3,7 @@ const express = require('express');
 const {
   createApplication,
   getOpportunityApplications,
+  getTouristApplications,
   deleteApplication,
   acceptApplication,
   rejectApplication,
@@ -22,11 +23,18 @@ const isAuth = require('../middlewares/authMiddleware');
 
 const router = express.Router({ mergeParams: true });
 
+router.rootApplicationsRouter = {
+  getOpportunityApplications: [
+    isAuth, allowedTo('HOST'), getOpportunityApplicationsValidator, getOpportunityApplications
+  ],
+};
+
 router.
   route('/')
   .post(isAuth, allowedTo('TOURIST'), createApplicationValidator, createApplication)
-  .get(isAuth, allowedTo('HOST'), getOpportunityApplicationsValidator, getOpportunityApplications)
+  .get(isAuth, allowedTo('TOURIST'), getTouristApplications)
   .delete(isAuth, allowedTo('TOURIST'), deleteApplicationValidator, deleteApplication);
+
 
 router.put('/accept', isAuth, allowedTo('HOST'), acceptApplicationValidator, acceptApplication);
 router.put('/reject', isAuth, allowedTo('HOST'), rejectApplicationValidator, rejectApplication);

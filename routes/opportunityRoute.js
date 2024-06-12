@@ -21,7 +21,7 @@ const applicationRouter = require('./applicationRoute');
 const router = express.Router({ mergeParams: true });
 
 router.use('/:id/apply', applicationRouter); // POST /opportunities/:id/apply
-router.use('/:id/applications', applicationRouter); // GET /opportunities/:id/applications
+router.use('/:id/applications', applicationRouter.rootApplicationsRouter.getOpportunityApplications); // GET /opportunities/:id/applications
 router.use('/:id/application', applicationRouter); // DELETE /opportunities/:id/application
 
 router
