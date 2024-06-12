@@ -111,7 +111,11 @@ exports.loginValidator = [
           message: 'Invalid email or password'
         };
       }
-      user.toursitApplications = user.toursitApplications.map(application => application.opportunityId);
+      if (user.role == 'TOURIST') {
+        user.toursitApplications = user.toursitApplications.map(application => application.opportunityId);
+      } else {
+        delete user.toursitApplications;
+      }
       req.user = user;
     }),
   customValidatorMiddleware,
