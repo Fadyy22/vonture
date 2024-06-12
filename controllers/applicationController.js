@@ -43,6 +43,35 @@ exports.getOpportunityApplications = asyncHandler(async (req, res) => {
   res.status(200).json({ applications: applications.appliedTourists });
 });
 
+exports.getTouristApplications = asyncHandler(async (req, res) => {
+  const applications = await prisma.tourist_Application.findMany({
+    where: {
+      touristId: req.user.id
+    },
+    select: {
+      opportunity: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          from: true,
+          to: true,
+          host: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+            }
+          }
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ applications });
+});
+
 exports.deleteApplication = asyncHandler(async (req, res) => {
   const opportunityId = req.params.id * 1;
 
