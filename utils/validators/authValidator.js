@@ -96,15 +96,22 @@ exports.loginValidator = [
       const user = await prisma.user.findUnique({
         where: {
           email: req.body.email
+        },
+        include: {
+          toursitApplications: {
+            select: {
+              opportunityId: true
+            }
+          }
         }
       });
-
       if (!user || !(await bcrypt.compare(password, user.password))) {
         req.customError = {
           statusCode: 401,
           message: 'Invalid email or password'
         };
       }
+      user.toursitApplications = user.toursitApplications.map(application => application.opportunityId);
       req.user = user;
     }),
   customValidatorMiddleware,
