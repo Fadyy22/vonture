@@ -65,7 +65,8 @@ exports.getTouristApplications = asyncHandler(async (req, res) => {
             }
           }
         }
-      }
+      },
+      status: true
     }
   });
 
