@@ -34,6 +34,12 @@
     # JWT
     JWT_SECRET_KEY=
     JWT_EXPIRATION=
+
+    # CLOUDINARY
+   CLOUDINARY_NAME=
+   CLOUDINARY_API_KEY=
+   CLOUDINARY_API_SECRET=
+
    ```
 
 5. Start the server
