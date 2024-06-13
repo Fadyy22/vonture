@@ -1,4 +1,4 @@
-const { check } = require('express-validator');
+const { check, checkExact } = require('express-validator');
 const { PrismaClient } = require('@prisma/client');
 
 const {
@@ -37,21 +37,24 @@ exports.createOpportunityValidator = [
     .withMessage('Title must be between 1 and 255 characters'),
   check('description')
     .trim()
-    .isLength({ min: 1, max: 255 })
-    .withMessage('Description must be between 1 and 255 characters'),
+    .isLength({ min: 50 })
+    .withMessage('Description must be at least 50 characters long'),
   check('from')
     .trim()
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Must be a date in YYYY-MM-DD format')
+    .bail()
     .customSanitizer(from => new Date(from).toISOString()),
   check('to')
     .trim()
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Must be a date in YYYY-MM-DD format')
+    .bail()
     .custom((to, { req }) => {
-      if (new Date(to) <= new Date(req.body.from)) {
-        throw new Error('To date must be greater than from date');
+      if (new Date(to) < new Date(req.body.from)) {
+        throw new Error('To date must be after from date');
       }
+      return true;
     })
     .customSanitizer(to => new Date(to).toISOString()),
   check('offers')
@@ -62,6 +65,7 @@ exports.createOpportunityValidator = [
     .optional()
     .isArray()
     .withMessage('Requirements must be an array of ids'),
+  checkExact([], { message: 'Unknown fileds' }),
   globalValidatorMiddleware
 ];
 
