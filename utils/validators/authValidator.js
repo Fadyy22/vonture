@@ -1,4 +1,4 @@
-const { check } = require('express-validator');
+const { check, checkExact } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 
@@ -79,6 +79,7 @@ exports.signupValidator = [
     .toUpperCase()
     .isIn(['HOST', 'TOURIST'])
     .withMessage('Role must be either HOST or TOURIST'),
+  checkExact([], { message: 'Unknown fileds' }),
   globalValidatorMiddleware,
 ];
 
