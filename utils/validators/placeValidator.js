@@ -1,4 +1,4 @@
-const { check } = require('express-validator');
+const { check, checkExact } = require('express-validator');
 const { PrismaClient } = require('@prisma/client');
 
 const {
@@ -43,6 +43,7 @@ exports.createPlaceValidator = [
     .withMessage('Type must be a string')
     .isLength({ min: 3, max: 255 })
     .withMessage('Type must be between 3 and 255 characters'),
+  checkExact([], { message: 'Unknown fileds' }),
   globalValidatorMiddleware
 ];
 
