@@ -48,6 +48,11 @@ exports.createOpportunityValidator = [
     .trim()
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Must be a date in YYYY-MM-DD format')
+    .custom((to, { req }) => {
+      if (new Date(to) <= new Date(req.body.from)) {
+        throw new Error('To date must be greater than from date');
+      }
+    })
     .customSanitizer(to => new Date(to).toISOString()),
   check('offers')
     .optional()
