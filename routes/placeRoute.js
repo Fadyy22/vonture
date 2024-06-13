@@ -4,6 +4,7 @@ const {
   createPlace,
   getAllPlaces,
   deletePlace,
+  parsePlaceImages,
 } = require('../controllers/placeController');
 
 const {
@@ -24,7 +25,7 @@ router.use('/:id/reviews', reviewRouter);
 
 router
   .route('/')
-  .post(isAuth, allowedTo('HOST'), createPlaceValidator, createPlace)
+  .post(isAuth, allowedTo('HOST'), parsePlaceImages, createPlaceValidator, createPlace)
   .get(getAllPlaces);
 
 router
