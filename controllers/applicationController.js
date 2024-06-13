@@ -70,6 +70,11 @@ exports.getTouristApplications = asyncHandler(async (req, res) => {
     }
   });
 
+  applications.forEach(application => {
+    application.opportunity.from = application.opportunity.from.toISOString().split('T')[0];
+    application.opportunity.to = application.opportunity.to.toISOString().split('T')[0];
+  });
+
   res.status(200).json({ applications });
 });
 

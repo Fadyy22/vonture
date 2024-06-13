@@ -66,6 +66,11 @@ exports.getAllOpportunities = asyncHandler(async (req, res) => {
     }
   });
 
+  opportunities.forEach(opportunity => {
+    opportunity.from = opportunity.from.toISOString().split('T')[0];
+    opportunity.to = opportunity.to.toISOString().split('T')[0];
+  });
+
   res.status(200).json({ opportunities });
 });
 
@@ -100,6 +105,9 @@ exports.getOpportunity = asyncHandler(async (req, res) => {
       }
     }
   });
+
+  opportunity.from = opportunity.from.toISOString().split('T')[0];
+  opportunity.to = opportunity.to.toISOString().split('T')[0];
 
   res.status(200).json({ opportunity });
 });
