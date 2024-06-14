@@ -39,6 +39,14 @@ uploadPlaceImages = async (files, res) => {
   return images;
 };
 
+exports.createUserFilter = (req, res, next) => {
+  req.filterObj = {};
+  if (req.params.id) {
+    req.filterObj.hostId = req.params.id * 1;
+  }
+  next();
+};
+
 exports.createPlace = asyncHandler(async (req, res) => {
   req.body.hostId = req.user.id;
   if (req.files.length > 0) {
@@ -57,6 +65,9 @@ exports.createPlace = asyncHandler(async (req, res) => {
 
 exports.getAllPlaces = asyncHandler(async (req, res) => {
   const places = await prisma.place.findMany({
+    where: {
+      ...req.filterObj,
+    },
     select: {
       id: true,
       name: true,

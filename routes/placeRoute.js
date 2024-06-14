@@ -5,6 +5,7 @@ const {
   getAllPlaces,
   deletePlace,
   parsePlaceImages,
+  createUserFilter,
 } = require('../controllers/placeController');
 
 const {
@@ -18,7 +19,7 @@ const isAuth = require('../middlewares/authMiddleware');
 const opportunityRouter = require('./opportunityRoute');
 const reviewRouter = require('./reviewRoute');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use('/:id/opportunities', opportunityRouter);
 router.use('/:id/reviews', reviewRouter);
@@ -26,7 +27,7 @@ router.use('/:id/reviews', reviewRouter);
 router
   .route('/')
   .post(isAuth, allowedTo('HOST'), parsePlaceImages, createPlaceValidator, createPlace)
-  .get(getAllPlaces);
+  .get(createUserFilter, getAllPlaces);
 
 router
   .route('/:id')
