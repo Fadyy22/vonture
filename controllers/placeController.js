@@ -74,6 +74,11 @@ exports.getAllPlaces = asyncHandler(async (req, res) => {
       city: true,
       country: true,
       rating: true,
+      placeMedia: {
+        select: {
+          media: true
+        }
+      },
       host: {
         select: {
           id: true,
@@ -83,6 +88,10 @@ exports.getAllPlaces = asyncHandler(async (req, res) => {
         }
       }
     }
+  });
+
+  places.forEach(place => {
+    place.placeMedia = place.placeMedia.map(media => media.media);
   });
 
   res.status(200).json({ places });
