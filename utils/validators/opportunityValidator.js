@@ -29,6 +29,12 @@ exports.createOpportunityValidator = [
           message: 'Unauthorized'
         };
       }
+      if (place.status !== 'APPROVED') {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Place must be approved first'
+        };
+      }
     }),
   customValidatorMiddleware,
   check('title')
