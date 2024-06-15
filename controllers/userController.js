@@ -11,5 +11,30 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
 });
 
 exports.getMyProfile = async (req, res) => {
-  res.status(200).json({ user: req.user });
+  const user = await prisma.user.findUnique({
+    where: {
+      id: req.user.id
+    },
+    include: {
+      receivedReviews: {
+        select: {
+          givenBy: {
+            select: {
+              first_name: true,
+              last_name: true
+            },
+          },
+          comment: true,
+          rating: true,
+        }
+      },
+      skills: {
+        select: {
+          name: true
+        }
+      },
+    }
+  });
+  user.skills = user.skills.map(skill => skill.name);
+  res.status(200).json({ user });
 };
