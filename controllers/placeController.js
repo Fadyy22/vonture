@@ -57,9 +57,17 @@ exports.createPlace = asyncHandler(async (req, res) => {
   }
 
   const place = await prisma.place.create({
-    data: req.body
+    data: req.body,
+    include: {
+      placeMedia: {
+        select: {
+          media: true
+        }
+      }
+    }
   });
 
+  place.placeMedia = place.placeMedia.map(media => media.media);
   res.status(201).json({ place });
 });
 
