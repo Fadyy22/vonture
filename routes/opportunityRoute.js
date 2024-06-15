@@ -6,6 +6,7 @@ const {
   getOpportunity,
   deleteOpportunity,
   createSearchObj,
+  createPlaceFilter,
 } = require('../controllers/opportunityController');
 
 const {
@@ -27,7 +28,7 @@ router.use('/:id/application', applicationRouter); // DELETE /opportunities/:id/
 router
   .route('/')
   .post(isAuth, allowedTo('HOST'), createOpportunityValidator, createOpportunity)
-  .get(createSearchObj, getAllOpportunities);
+  .get(createSearchObj, createPlaceFilter, getAllOpportunities);
 
 router
   .route('/:id')
