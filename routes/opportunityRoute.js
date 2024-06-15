@@ -4,14 +4,14 @@ const {
   createOpportunity,
   getAllOpportunities,
   getOpportunity,
-  deleteOpportunity,
+  closeOpportunity,
   createSearchObj,
   createPlaceFilter,
 } = require('../controllers/opportunityController');
 
 const {
   createOpportunityValidator,
-  deleteOpportunityValidator,
+  closeOpportunityValidator,
 } = require('../utils/validators/opportunityValidator');
 
 const allowedTo = require('../middlewares/allowedToMiddleware');
@@ -33,6 +33,6 @@ router
 router
   .route('/:id')
   .get(getOpportunity)
-  .delete(isAuth, allowedTo('HOST'), deleteOpportunityValidator, deleteOpportunity);
+  .put(isAuth, allowedTo('HOST'), closeOpportunityValidator, closeOpportunity);
 
 module.exports = router;
