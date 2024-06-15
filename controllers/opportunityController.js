@@ -133,10 +133,13 @@ exports.getOpportunity = asyncHandler(async (req, res) => {
   res.status(200).json({ opportunity });
 });
 
-exports.deleteOpportunity = asyncHandler(async (req, res) => {
-  await prisma.opportunity.delete({
-    where: { id: req.params.id * 1 }
+exports.closeOpportunity = asyncHandler(async (req, res) => {
+  const opportunity = await prisma.opportunity.update({
+    where: { id: req.params.id * 1 },
+    data: {
+      status: 'CLOSED'
+    }
   });
 
-  res.status(204).json();
+  res.status(200).json({ opportunity });
 });

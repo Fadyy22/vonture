@@ -75,7 +75,7 @@ exports.createOpportunityValidator = [
   globalValidatorMiddleware
 ];
 
-exports.deleteOpportunityValidator = [
+exports.closeOpportunityValidator = [
   check('id')
     .isInt()
     .withMessage('id must be an integer')
