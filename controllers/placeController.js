@@ -79,6 +79,7 @@ exports.getAllPlaces = asyncHandler(async (req, res) => {
           media: true
         }
       },
+      status: true,
       host: {
         select: {
           id: true,
