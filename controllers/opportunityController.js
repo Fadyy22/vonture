@@ -17,6 +17,14 @@ exports.createSearchObj = (req, res, next) => {
   next();
 };
 
+exports.createPlaceFilter = (req, res, next) => {
+  const placeId = req.params.id;
+  req.placeFilter = placeId ? {
+    placeId: placeId * 1
+  } : {};
+  next();
+};
+
 exports.createOpportunity = asyncHandler(async (req, res) => {
   req.body.hostId = req.user.id;
   req.body.placeId = req.params.id * 1;
@@ -38,6 +46,7 @@ exports.getAllOpportunities = asyncHandler(async (req, res) => {
     where: {
       status: 'OPEN',
       ...req.searchObj,
+      ...req.placeFilter,
     },
     select: {
       id: true,
