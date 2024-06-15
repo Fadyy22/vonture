@@ -4,12 +4,10 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.createPlaceReview = asyncHandler(async (req, res) => {
+  req.placeId = req.params.id * 1;
+  req.touristId = req.user.id;
   const review = await prisma.tourist_Place_Review.create({
-    data: {
-      placeId: req.params.id * 1,
-      touristId: req.user.id,
-      ...req.body
-    }
+    data: req.body
   });
 
   const reviewsAvg = await prisma.tourist_Place_Review.aggregate({
@@ -42,15 +40,47 @@ exports.createUserReview = asyncHandler(async (req, res) => {
     data: req.body
   });
 
+  const reviewsAvg = await prisma.host_Tourist_Review.aggregate({
+    where: {
+      receivedById: req.body.receivedById,
+    },
+    _avg: {
+      rating: true,
+    },
+  });
+  console.log(reviewsAvg);
+
+  await prisma.user.update({
+    where: { id: req.body.receivedById },
+    data: {
+      rating: {
+        set: reviewsAvg._avg.rating,
+      },
+    },
+  });
+
   res.status(201).json({ review });
 });
 
-exports.deleteOpportunityReview = asyncHandler(async (req, res) => {
-  await prisma.tourist_Opportunity_Review.delete({
+exports.deletePlaceReview = asyncHandler(async (req, res) => {
+  await prisma.tourist_Place_Review.delete({
     where: {
-      touristId_opportunityId: {
-        opportunityId: req.params.id * 1,
+      touristId_placeId: {
+        placeId: req.params.id * 1,
         touristId: req.user.id
+      }
+    }
+  });
+
+  res.status(204).json();
+});
+
+exports.deleteUserReview = asyncHandler(async (req, res) => {
+  await prisma.host_Tourist_Review.delete({
+    where: {
+      receivedById_givenById: {
+        receivedById: req.params.id * 1,
+        givenById: req.user.id
       }
     }
   });

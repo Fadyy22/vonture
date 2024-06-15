@@ -23,7 +23,8 @@ const reviewRouter = require('./reviewRoute');
 const router = express.Router({ mergeParams: true });
 
 router.use('/:id/opportunities', opportunityRouter);
-router.use('/:id/reviews', reviewRouter);
+router.post('/:id/reviews', reviewRouter.rootReviewRouter.createPlaceReview);
+router.delete('/:id/reviews', reviewRouter.rootReviewRouter.deletePlaceReview);
 
 router
   .route('/')

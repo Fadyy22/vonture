@@ -31,21 +31,14 @@ exports.createPlaceReviewValidator = [
 
       const hasApplied = await prisma.tourist_Application.findFirst({
         where: {
-          AND: [
-            {
-              opportunityId: {
-                in: place.opportunities.map(opportunity => opportunity.id)
-              }
-            },
-            {
-              touristId: req.user.id
-            },
-            {
-              status: 'ACCEPTED'
-            }
-          ]
-        }
-      });
+          opportunityId: {
+            in: place.opportunities.map(opportunity => opportunity.id)
+          },
+          touristId: req.user.id,
+          status: 'ACCEPTED',
+        },
+      }
+      );
 
       if (!hasApplied) {
         return req.customError = {
@@ -98,6 +91,39 @@ exports.createUserReviewValidator = [
         };
       }
 
+      let whereClause;
+      let message;
+      if (user.role === 'HOST') {
+        whereClause = {
+          opportunity: {
+            hostId: userId * 1
+          },
+          touristId: req.user.id,
+          status: 'ACCEPTED'
+        };
+        message = 'You must apply and be accepted for an opportunity before reviewing a host';
+      } else {
+        whereClause = {
+          opportunity: {
+            hostId: req.user.id * 1
+          },
+          touristId: userId * 1,
+          status: 'ACCEPTED'
+        };
+        message = 'You must accept an application before reviewing a tourist';
+      }
+
+      const hasApplied = await prisma.tourist_Application.findFirst({
+        where: whereClause,
+      });
+
+      if (!hasApplied) {
+        return req.customError = {
+          statusCode: 403,
+          message: message
+        };
+      }
+
       const existingReview = await prisma.host_Tourist_Review.findUnique({
         where: {
           receivedById_givenById: {
@@ -126,16 +152,16 @@ exports.createUserReviewValidator = [
   globalValidatorMiddleware
 ];
 
-exports.deleteOpportunityReviewValidator = [
+exports.deletePlaceReviewValidator = [
   check('id')
     .isInt()
-    .withMessage('opportunityId must be an integer')
+    .withMessage('placeId must be an integer')
     .bail()
-    .custom(async (opportunityId, { req }) => {
-      const review = await prisma.tourist_Opportunity_Review.findUnique({
+    .custom(async (placeId, { req }) => {
+      const review = await prisma.tourist_Place_Review.findUnique({
         where: {
-          touristId_opportunityId: {
-            opportunityId: opportunityId * 1,
+          touristId_placeId: {
+            placeId: placeId * 1,
             touristId: req.user.id,
           }
         }
@@ -147,6 +173,37 @@ exports.deleteOpportunityReviewValidator = [
         };
       }
       if (review.touristId !== req.user.id) {
+        return req.customError = {
+          statusCode: 403,
+          message: 'Unauthorized'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
+];
+
+exports.deleteUserReviewValidator = [
+  check('id')
+    .isInt()
+    .withMessage('userId must be an integer')
+    .bail()
+    .custom(async (userId, { req }) => {
+      const review = await prisma.host_Tourist_Review.findUnique({
+        where: {
+          receivedById_givenById: {
+            receivedById: userId * 1,
+            givenById: req.user.id,
+          }
+        }
+      });
+      if (!review) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Review not found'
+        };
+      }
+      if (review.givenById !== req.user.id) {
         return req.customError = {
           statusCode: 403,
           message: 'Unauthorized'
