@@ -25,7 +25,7 @@ const router = express.Router({ mergeParams: true });
 
 router.rootApplicationsRouter = {
   getOpportunityApplications: [
-    isAuth, allowedTo('HOST'), getOpportunityApplicationsValidator, getOpportunityApplications
+    isAuth, allowedTo('HOST', 'ADMIN'), getOpportunityApplicationsValidator, getOpportunityApplications
   ],
 };
 

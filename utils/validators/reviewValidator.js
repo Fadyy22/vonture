@@ -155,14 +155,16 @@ exports.createUserReviewValidator = [
 exports.deletePlaceReviewValidator = [
   check('id')
     .isInt()
-    .withMessage('placeId must be an integer')
+    .withMessage('placeId must be an integer'),
+  check('touristId')
+    .isInt()
     .bail()
-    .custom(async (placeId, { req }) => {
+    .custom(async (touristId, { req }) => {
       const review = await prisma.tourist_Place_Review.findUnique({
         where: {
           touristId_placeId: {
-            placeId: placeId * 1,
-            touristId: req.user.id,
+            placeId: req.params.id * 1,
+            touristId: touristId * 1,
           }
         }
       });
@@ -172,7 +174,7 @@ exports.deletePlaceReviewValidator = [
           message: 'Review not found'
         };
       }
-      if (review.touristId !== req.user.id) {
+      if (req.user.role === 'TOURIST' && review.touristId !== req.user.id) {
         return req.customError = {
           statusCode: 403,
           message: 'Unauthorized'
@@ -186,14 +188,14 @@ exports.deletePlaceReviewValidator = [
 exports.deleteUserReviewValidator = [
   check('id')
     .isInt()
-    .withMessage('userId must be an integer')
-    .bail()
-    .custom(async (userId, { req }) => {
+    .withMessage('userId must be an integer'),
+  check('givenById')
+    .custom(async (givenById, { req }) => {
       const review = await prisma.host_Tourist_Review.findUnique({
         where: {
           receivedById_givenById: {
-            receivedById: userId * 1,
-            givenById: req.user.id,
+            receivedById: req.params.id * 1,
+            givenById: givenById * 1,
           }
         }
       });
@@ -203,7 +205,7 @@ exports.deleteUserReviewValidator = [
           message: 'Review not found'
         };
       }
-      if (review.givenById !== req.user.id) {
+      if (req.user.role !== 'ADMIN' && review.givenById !== req.user.id) {
         return req.customError = {
           statusCode: 403,
           message: 'Unauthorized'

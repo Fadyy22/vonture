@@ -59,7 +59,7 @@ exports.getOpportunityApplicationsValidator = [
         };
       }
 
-      if (opportunity.hostId !== req.user.id) {
+      if (req.user.role === 'HOST' && opportunity.hostId !== req.user.id) {
         return req.customError = {
           statusCode: 403,
           message: 'Unauthorized'

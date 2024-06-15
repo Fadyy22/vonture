@@ -63,7 +63,7 @@ exports.deletePlaceValidator = [
           message: 'Place not found'
         };
       }
-      if (place.hostId !== req.user.id) {
+      if (req.user.role === 'HOST' && place.hostId !== req.user.id) {
         return req.customError = {
           statusCode: 403,
           message: 'Unauthorized'

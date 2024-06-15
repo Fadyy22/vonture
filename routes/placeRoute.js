@@ -33,7 +33,7 @@ router
 
 router
   .route('/:id')
-  .delete(isAuth, allowedTo('HOST'), deletePlaceValidator, deletePlace);
+  .delete(isAuth, allowedTo('HOST', 'ADMIN'), deletePlaceValidator, deletePlace);
 
 router.put('/:id/approve', isAuth, allowedTo('ADMIN'), approvePlace);
 
