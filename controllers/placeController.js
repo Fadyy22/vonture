@@ -106,3 +106,12 @@ exports.deletePlace = asyncHandler(async (req, res) => {
 
   res.status(204).json();
 });
+
+exports.approvePlace = asyncHandler(async (req, res) => {
+  const place = await prisma.place.update({
+    where: { id: req.params.id * 1 },
+    data: { status: 'APPROVED' }
+  });
+
+  res.status(200).json({ place });
+});

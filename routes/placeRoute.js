@@ -6,6 +6,7 @@ const {
   deletePlace,
   parsePlaceImages,
   createUserFilter,
+  approvePlace,
 } = require('../controllers/placeController');
 
 const {
@@ -32,5 +33,7 @@ router
 router
   .route('/:id')
   .delete(isAuth, allowedTo('HOST'), deletePlaceValidator, deletePlace);
+
+router.put('/:id/approve', isAuth, allowedTo('ADMIN'), approvePlace);
 
 module.exports = router;
