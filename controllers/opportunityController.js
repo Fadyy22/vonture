@@ -136,6 +136,16 @@ exports.getOpportunity = asyncHandler(async (req, res) => {
           last_name: true,
           rating: true,
         }
+      },
+      requirements: {
+        select: {
+          name: true
+        }
+      },
+      offers: {
+        select: {
+          name: true
+        }
       }
     }
   });
@@ -143,6 +153,8 @@ exports.getOpportunity = asyncHandler(async (req, res) => {
   opportunity.from = opportunity.from.toISOString().split('T')[0];
   opportunity.to = opportunity.to.toISOString().split('T')[0];
   opportunity.place.placeMedia = opportunity.place.placeMedia.map(media => media.media);
+  opportunity.requirements = opportunity.requirements.map(requirement => requirement.name);
+  opportunity.offers = opportunity.offers.map(offer => offer.name);
 
   res.status(200).json({ opportunity });
 });
