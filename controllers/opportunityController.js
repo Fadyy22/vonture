@@ -35,9 +35,23 @@ exports.createOpportunity = asyncHandler(async (req, res) => {
     connect: req.body.offers.map(id => ({ id }))
   };
   const opportunity = await prisma.opportunity.create({
-    data: req.body
+    data: req.body,
+    include: {
+      requirements: {
+        select: {
+          name: true
+        }
+      },
+      offers: {
+        select: {
+          name: true
+        }
+      }
+    }
   });
 
+  opportunity.requirements = opportunity.requirements.map(requirement => requirement.name);
+  opportunity.offers = opportunity.offers.map(offer => offer.name);
   res.status(201).json({ opportunity });
 });
 
