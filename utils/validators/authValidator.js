@@ -98,13 +98,13 @@ exports.loginValidator = [
         where: {
           email: req.body.email
         },
-        // include: {
-        //   toursitApplications: {
-        //     select: {
-        //       opportunityId: true
-        //     }
-        //   }
-        // }
+        include: {
+          toursitApplications: {
+            select: {
+              opportunityId: true
+            }
+          }
+        }
       });
       if (!user || !(await bcrypt.compare(password, user.password))) {
         req.customError = {
@@ -112,11 +112,7 @@ exports.loginValidator = [
           message: 'Invalid email or password'
         };
       }
-      // if (user.role == 'TOURIST') {
-      //   user.toursitApplications = user.toursitApplications.map(application => application.opportunityId);
-      // } else {
-      //   delete user.toursitApplications;
-      // }
+      user.toursitApplications = user.toursitApplications.map(application => application.opportunityId);
       req.user = user;
     }),
   customValidatorMiddleware,
