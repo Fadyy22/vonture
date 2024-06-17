@@ -131,7 +131,7 @@ exports.acceptApplication = asyncHandler(async (req, res) => {
 
   try {
     await sendEmail({
-      to: 'fadyalaa441@gmail.com',
+      to: application.tourist.email,
       subject: acceptanceSubject(application),
       text: acceptanceText(application)
     });
@@ -178,7 +178,7 @@ exports.rejectApplication = asyncHandler(async (req, res) => {
 
   try {
     await sendEmail({
-      to: 'fadyalaa441@gmail.com',
+      to: application.tourist.email,
       subject: rejectionSubject(application),
       text: rejectionText(application)
     });
