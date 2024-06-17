@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const { PrismaClient } = require('@prisma/client');
 
+const sendEmail = require('../utils/sendEmail');
+const { acceptanceText, acceptanceSubject, rejectionSubject, rejectionText } = require('../utils/emailText');
 const prisma = new PrismaClient();
 
 exports.createApplication = asyncHandler(async (req, res) => {
@@ -94,11 +96,32 @@ exports.deleteApplication = asyncHandler(async (req, res) => {
 });
 
 exports.acceptApplication = asyncHandler(async (req, res) => {
-  await prisma.tourist_Application.update({
+  const application = await prisma.tourist_Application.update({
     where: {
       touristId_opportunityId: {
         opportunityId: req.body.opportunityId,
         touristId: req.body.touristId
+      }
+    },
+    include: {
+      tourist: {
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true,
+        }
+      },
+      opportunity: {
+        select: {
+          title: true,
+          place: {
+            select: {
+              name: true,
+            }
+          },
+          from: true,
+          to: true,
+        }
       }
     },
     data: {
@@ -106,21 +129,62 @@ exports.acceptApplication = asyncHandler(async (req, res) => {
     }
   });
 
+  try {
+    await sendEmail({
+      to: 'fadyalaa441@gmail.com',
+      subject: acceptanceSubject(application),
+      text: acceptanceText(application)
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Email could not be sent' });
+  }
+
   res.status(200).json();
 });
 
 exports.rejectApplication = asyncHandler(async (req, res) => {
-  await prisma.tourist_Application.update({
+  const application = await prisma.tourist_Application.update({
     where: {
       touristId_opportunityId: {
         opportunityId: req.body.opportunityId,
         touristId: req.body.touristId
       }
     },
+    include: {
+      tourist: {
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true,
+        }
+      },
+      opportunity: {
+        select: {
+          title: true,
+          place: {
+            select: {
+              name: true,
+            }
+          },
+          from: true,
+          to: true,
+        }
+      }
+    },
     data: {
       status: 'REJECTED',
     }
   });
+
+  try {
+    await sendEmail({
+      to: 'fadyalaa441@gmail.com',
+      subject: rejectionSubject(application),
+      text: rejectionText(application)
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Email could not be sent' });
+  }
 
   res.status(200).json();
 });

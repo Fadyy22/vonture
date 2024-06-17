@@ -20,7 +20,7 @@ exports.createSearchObj = (req, res, next) => {
 exports.createPlaceFilter = (req, res, next) => {
   const placeId = req.params.id;
   req.placeFilter = placeId ? {
-    placeId: placeId * 1
+    placeId: placeId * 1,
   } : {};
   next();
 };
@@ -56,9 +56,14 @@ exports.createOpportunity = asyncHandler(async (req, res) => {
 });
 
 exports.getAllOpportunities = asyncHandler(async (req, res) => {
+  if (Object.keys(req.placeFilter).length === 0) {
+    req.opportunityStatus = {
+      status: 'OPEN'
+    };
+  }
   const opportunities = await prisma.opportunity.findMany({
     where: {
-      status: 'OPEN',
+      ...req.opportunityStatus,
       ...req.searchObj,
       ...req.placeFilter,
     },
@@ -68,6 +73,7 @@ exports.getAllOpportunities = asyncHandler(async (req, res) => {
       description: true,
       from: true,
       to: true,
+      status: true,
       createdAt: true,
       place: {
         select: {
