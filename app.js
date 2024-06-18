@@ -1,13 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
+const stripe = require('stripe');
 
 const jobs = require('./utils/jobs');
 const mountRotues = require('./routes/index');
-
+const { webhookCheckout } = require('./controllers/paymentController');
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
+
+app.post('/webhook', express.raw({ type: 'application/json' }), webhookCheckout);
+
 app.use(express.json());
 
 app.use((req, res, next) => {
