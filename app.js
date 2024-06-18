@@ -5,7 +5,7 @@ const stripe = require('stripe');
 
 const jobs = require('./utils/jobs');
 const mountRotues = require('./routes/index');
-const { webhookCheckout } = require('./controllers/paymentController');
+// const { webhookCheckout } = require('./controllers/paymentController');
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ const app = express();
 
 app.use(cors());
 
-app.post('/webhook', express.raw({ type: 'application/json' }), webhookCheckout);
+// app.post('/webhook', express.raw({ type: 'application/json' }), webhookCheckout);
 
 app.use(express.json());
 

@@ -60,8 +60,16 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
           createdAt: true,
         }
       },
+      skills: {
+        select: {
+          name: true
+        }
+      }
     }
   });
+
+  delete user.password;
+  user.skills = user.skills.map(skill => skill.name);
 
   return res.status(200).json({ user });
 });
