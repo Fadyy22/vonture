@@ -27,6 +27,7 @@ exports.getOpportunityApplications = asyncHandler(async (req, res) => {
           id: true,
           first_name: true,
           last_name: true,
+          bio: true,
           email: true,
           gender: true,
           nationality: true,
