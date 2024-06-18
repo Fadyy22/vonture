@@ -118,6 +118,7 @@ exports.getOpportunity = asyncHandler(async (req, res) => {
       description: true,
       from: true,
       to: true,
+      status: true,
       createdAt: true,
       place: {
         select: {
