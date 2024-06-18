@@ -38,3 +38,30 @@ exports.getMyProfile = async (req, res) => {
   user.skills = user.skills.map(skill => skill.name);
   res.status(200).json({ user });
 };
+
+exports.getUserProfile = asyncHandler(async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: req.params.id * 1
+    },
+    include: {
+      place: true,
+      receivedReviews: {
+        select: {
+          givenBy: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true
+            }
+          },
+          rating: true,
+          comment: true,
+          createdAt: true,
+        }
+      },
+    }
+  });
+
+  return res.status(200).json({ user });
+});

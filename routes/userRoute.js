@@ -3,6 +3,7 @@ const express = require('express');
 const {
   getAllUsers,
   getMyProfile,
+  getUserProfile,
 } = require('../controllers/userController');
 
 const placeRouter = require('./placeRoute');
@@ -25,5 +26,9 @@ router
 router
   .route('/me')
   .get(isAuth, getMyProfile);
+
+router
+  .route('/:id')
+  .get(getUserProfile);
 
 module.exports = router;
