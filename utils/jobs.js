@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const updateExpiredOpportunitiesJob = scheduleJob('0 0 * * *', asyncHandler(async () => {
   let opportunities = await prisma.opportunity.findMany({
     where: {
-      to: {
+      from: {
         lte: new Date()
       }
     },
