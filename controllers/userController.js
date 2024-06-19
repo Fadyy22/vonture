@@ -100,8 +100,9 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
   });
 
   delete user.password;
+  user.gender = user.gender === 'MALE' ? 'Male' : 'Female';
+  user.age = new Date().getFullYear() - new Date(user.birthdate).getFullYear();
   user.skills = user.skills.map(skill => skill.name);
-
   return res.status(200).json({ user });
 });
 
