@@ -79,6 +79,9 @@ exports.signupValidator = [
     .toUpperCase()
     .isIn(['HOST', 'TOURIST'])
     .withMessage('Role must be either HOST or TOURIST'),
+  check('skills')
+    .isArray()
+    .withMessage('Skills must be an array of ids'),
   checkExact([], { message: 'Unknown fileds' }),
   globalValidatorMiddleware,
 ];
