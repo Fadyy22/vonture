@@ -4,6 +4,8 @@ const {
   getAllUsers,
   getMyProfile,
   getUserProfile,
+  parseProfileImage,
+  createProfileImage,
 } = require('../controllers/userController');
 
 const placeRouter = require('./placeRoute');
@@ -30,5 +32,9 @@ router
 router
   .route('/:id')
   .get(getUserProfile);
+
+router
+  .route('/profile_img')
+  .put(isAuth, parseProfileImage, createProfileImage);
 
 module.exports = router;
