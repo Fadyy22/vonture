@@ -46,6 +46,7 @@ model User {
   id                  Int                    @id @default(autoincrement())
   first_name          String
   last_name           String
+  profile_img         String?
   email               String                 @unique
   password            String
   phone_number        String
