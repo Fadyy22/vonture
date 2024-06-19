@@ -4,6 +4,7 @@ const offerRouter = require('./offerRoute');
 const opportunityRouter = require('./opportunityRoute');
 const placeRouter = require('./placeRoute');
 const requirementRouter = require('./requirementRoute');
+const skillRouter = require('./skillRoute');
 const subscriptionRouter = require('./subscriptionRoute');
 const userRouter = require('./userRoute');
 
@@ -14,6 +15,7 @@ const mountRoutes = (app) => {
   app.use('/opportunities', opportunityRouter);
   app.use('/places', placeRouter);
   app.use('/requirements', requirementRouter);
+  app.use('/skills', skillRouter);
   app.use('/subscribe', subscriptionRouter);
   app.use('/users', userRouter);
 };
