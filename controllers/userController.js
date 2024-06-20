@@ -41,7 +41,7 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
   res.status(200).json({ users });
 });
 
-exports.getMyProfile = async (req, res) => {
+exports.getMyProfile = asyncHandler(async (req, res) => {
   const user = await prisma.user.findUnique({
     where: {
       id: req.user.id
@@ -68,9 +68,21 @@ exports.getMyProfile = async (req, res) => {
   });
   user.skills = user.skills.map(skill => skill.name);
   res.status(200).json({ user });
-};
+});
 
 exports.getUserProfile = asyncHandler(async (req, res) => {
+  let applicationStatus;
+  req.body.opportunityId ? applicationStatus = {
+    toursitApplications: {
+      where: {
+        opportunityId: req.body.opportunityId * 1
+      },
+      select: {
+        status: true
+      }
+    }
+  } : {};
+
   const user = await prisma.user.findUnique({
     where: {
       id: req.params.id * 1
@@ -95,14 +107,18 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
         select: {
           name: true
         }
-      }
+      },
+      ...applicationStatus
     }
   });
 
-  delete user.password;
   user.gender = user.gender === 'MALE' ? 'Male' : 'Female';
   user.age = new Date().getFullYear() - new Date(user.birthdate).getFullYear();
   user.skills = user.skills.map(skill => skill.name);
+  user.status = user.toursitApplications && user.toursitApplications.length > 0 ? user.toursitApplications[0].status : null;
+  user.status === null ? delete user.status : null;
+  delete user.password;
+  delete user.toursitApplications;
   return res.status(200).json({ user });
 });
 
