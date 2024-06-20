@@ -118,7 +118,7 @@ model Opportunity {
 model Plan {
   id       Int            @id @default(autoincrement())
   name     String
-  duration String
+  duration Int
   price    Int
   tourists Tourist_Plan[]
 }
