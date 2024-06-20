@@ -136,7 +136,7 @@ exports.acceptApplication = asyncHandler(async (req, res) => {
     return res.status(500).json({ error: 'Email could not be sent' });
   }
 
-  res.status(200).json();
+  res.status(200).json({ application });
 });
 
 exports.rejectApplication = asyncHandler(async (req, res) => {
@@ -183,5 +183,5 @@ exports.rejectApplication = asyncHandler(async (req, res) => {
     return res.status(500).json({ error: 'Email could not be sent' });
   }
 
-  res.status(200).json();
+  res.status(200).json({ application });
 });
