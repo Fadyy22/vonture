@@ -131,6 +131,9 @@ exports.getPlace = asyncHandler(async (req, res) => {
       }
     }
   });
+  if (!place) {
+    return res.status(404).json({ error: 'Place not found' });
+  }
   place.placeMedia = place.placeMedia.map(media => media.media);
   res.status(200).json({ place });
 });
