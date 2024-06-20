@@ -24,10 +24,10 @@ router.rootReviewRouter = {
     isAuth, allowedTo('TOURIST'), createPlaceReviewValidator, createPlaceReview,
   ],
   createUserReview: [
-    isAuth, allowedTo('TOURIST', 'HOST', 'ADMIN'), createUserReviewValidator, createUserReview,
+    isAuth, allowedTo('TOURIST', 'HOST'), createUserReviewValidator, createUserReview,
   ],
   deletePlaceReview: [
-    isAuth, allowedTo('TOURIST'), deletePlaceReviewValidator, deletePlaceReview,
+    isAuth, allowedTo('TOURIST', 'ADMIN'), deletePlaceReviewValidator, deletePlaceReview,
   ],
   deleteUserReview: [
     isAuth, allowedTo('TOURIST', 'HOST', 'ADMIN'), deleteUserReviewValidator, deleteUserReview,
