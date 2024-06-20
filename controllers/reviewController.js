@@ -67,7 +67,7 @@ exports.deletePlaceReview = asyncHandler(async (req, res) => {
     where: {
       touristId_placeId: {
         placeId: req.params.id * 1,
-        touristId: req.user.id
+        touristId: req.body.touristId * 1
       }
     }
   });
@@ -80,7 +80,7 @@ exports.deleteUserReview = asyncHandler(async (req, res) => {
     where: {
       receivedById_givenById: {
         receivedById: req.params.id * 1,
-        givenById: req.user.id
+        givenById: req.body.givenById * 1
       }
     }
   });
