@@ -106,6 +106,35 @@ exports.getAllPlaces = asyncHandler(async (req, res) => {
   res.status(200).json({ places });
 });
 
+exports.getPlace = asyncHandler(async (req, res) => {
+  const place = await prisma.place.findUnique({
+    where: { id: req.params.id * 1 },
+    include: {
+      placeMedia: {
+        select: {
+          media: true
+        }
+      },
+      opportunities: true,
+      touristReviews: {
+        select: {
+          tourist: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true
+            }
+          },
+          comment: true,
+          rating: true
+        }
+      }
+    }
+  });
+  place.placeMedia = place.placeMedia.map(media => media.media);
+  res.status(200).json({ place });
+});
+
 exports.deletePlace = asyncHandler(async (req, res) => {
   const id = req.params.id * 1;
 

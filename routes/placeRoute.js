@@ -3,6 +3,7 @@ const express = require('express');
 const {
   createPlace,
   getAllPlaces,
+  getPlace,
   deletePlace,
   parsePlaceImages,
   createUserFilter,
@@ -33,6 +34,7 @@ router
 
 router
   .route('/:id')
+  .get(getPlace)
   .delete(isAuth, allowedTo('HOST', 'ADMIN'), deletePlaceValidator, deletePlace);
 
 router.put('/:id/approve', isAuth, allowedTo('ADMIN'), approvePlace);
