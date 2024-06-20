@@ -80,6 +80,7 @@ exports.signupValidator = [
     .isIn(['HOST', 'TOURIST'])
     .withMessage('Role must be either HOST or TOURIST'),
   check('skills')
+    .optional()
     .isArray()
     .withMessage('Skills must be an array of ids'),
   checkExact([], { message: 'Unknown fileds' }),
