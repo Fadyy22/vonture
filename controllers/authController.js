@@ -6,9 +6,11 @@ const createToken = require('../utils/createToken');
 const prisma = new PrismaClient();
 
 exports.singup = asyncHandler(async (req, res) => {
-  req.body.skills = {
-    connect: req.body.skills.map(id => ({ id }))
-  };
+  if (req.body.skills) {
+    req.body.skills = {
+      connect: req.body.skills.map(id => ({ id }))
+    };
+  }
   const user = await prisma.user.create({
     data: req.body
   });
