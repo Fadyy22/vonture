@@ -26,8 +26,8 @@ exports.getPaymentCheckout = asyncHandler(async (req, res) => {
     mode: 'payment',
     client_reference_id: req.user.id.toString(),
     customer_email: req.user.email,
-    success_url: `${req.protocol}://${req.get('host')}/success.html`,
-    cancel_url: `${req.protocol}://${req.get('host')}/failure.html`
+    success_url: `${req.protocol}://${req.get('host')}/payment_success.html`,
+    cancel_url: `${req.protocol}://${req.get('host')}/payment_failure.html`
   });
 
   res.status(200).json({ session: session.url });
