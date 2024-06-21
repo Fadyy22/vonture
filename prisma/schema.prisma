@@ -176,13 +176,12 @@ model Tourist_Place_Review {
 }
 
 model Tourist_Plan {
+  id        Int      @id @default(autoincrement())
   tourist   User     @relation(fields: [touristId], references: [id], onDelete: Cascade)
   touristId Int
   plan      Plan     @relation(fields: [planId], references: [id])
   planId    Int
   createdAt DateTime @default(now())
-
-  @@id([touristId, planId])
 }
 
 model Tourist_Application {
