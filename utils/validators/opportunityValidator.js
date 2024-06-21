@@ -75,6 +75,27 @@ exports.createOpportunityValidator = [
   globalValidatorMiddleware
 ];
 
+exports.getOpportunityValidator = [
+  check('id')
+    .isInt()
+    .withMessage('id must be an integer')
+    .bail()
+    .custom(async (id, { req }) => {
+      const opportunity = await prisma.opportunity.findUnique({
+        where: { id: id * 1 }
+      });
+
+      if (!opportunity) {
+        return req.customError = {
+          statusCode: 404,
+          message: 'Opportunity not found'
+        };
+      }
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware
+];
+
 exports.closeOpportunityValidator = [
   check('id')
     .isInt()

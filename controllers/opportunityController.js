@@ -134,6 +134,20 @@ exports.getOpportunity = asyncHandler(async (req, res) => {
               media: true
             }
           },
+          touristReviews: {
+            select: {
+              tourist: {
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                }
+              },
+              rating: true,
+              comment: true,
+              createdAt: true
+            }
+          }
         }
       },
       host: {

@@ -11,6 +11,7 @@ const {
 
 const {
   createOpportunityValidator,
+  getOpportunityValidator,
   closeOpportunityValidator,
 } = require('../utils/validators/opportunityValidator');
 
@@ -40,7 +41,7 @@ router
 
 router
   .route('/:id')
-  .get(getOpportunity)
+  .get(getOpportunityValidator, getOpportunity)
   .put(isAuth, allowedTo('HOST'), closeOpportunityValidator, closeOpportunity);
 
 router
