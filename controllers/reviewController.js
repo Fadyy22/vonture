@@ -4,8 +4,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.createPlaceReview = asyncHandler(async (req, res) => {
-  req.placeId = req.params.id * 1;
-  req.touristId = req.user.id;
+  req.body.placeId = req.params.id * 1;
+  req.body.touristId = req.user.id;
   const review = await prisma.tourist_Place_Review.create({
     data: req.body
   });
