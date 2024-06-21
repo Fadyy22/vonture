@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
