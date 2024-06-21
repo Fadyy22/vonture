@@ -12,8 +12,7 @@ exports.webhookCheckout = async (req, res) => {
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_KEY);
   } catch (err) {
-    console.log(err);
-    return;
+    return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   if (event.type === 'checkout.session.completed') {
@@ -24,4 +23,7 @@ exports.webhookCheckout = async (req, res) => {
       createSubscription(event);
     }
   }
+
+  res.status(200).end();
+
 };
