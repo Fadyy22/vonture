@@ -126,15 +126,15 @@ exports.acceptApplication = asyncHandler(async (req, res) => {
     }
   });
 
-  // try {
-  //   await sendEmail({
-  //     to: application.tourist.email,
-  //     subject: acceptanceSubject(application),
-  //     text: acceptanceText(application)
-  //   });
-  // } catch (error) {
-  //   return res.status(500).json({ error: 'Email could not be sent' });
-  // }
+  try {
+    await sendEmail({
+      to: application.tourist.email,
+      subject: acceptanceSubject(application),
+      text: acceptanceText(application)
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Email could not be sent' });
+  }
 
   res.status(200).json({ application });
 });
@@ -173,15 +173,15 @@ exports.rejectApplication = asyncHandler(async (req, res) => {
     }
   });
 
-  // try {
-  //   await sendEmail({
-  //     to: application.tourist.email,
-  //     subject: rejectionSubject(application),
-  //     text: rejectionText(application)
-  //   });
-  // } catch (error) {
-  //   return res.status(500).json({ error: 'Email could not be sent' });
-  // }
+  try {
+    await sendEmail({
+      to: application.tourist.email,
+      subject: rejectionSubject(application),
+      text: rejectionText(application)
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Email could not be sent' });
+  }
 
   res.status(200).json({ application });
 });
