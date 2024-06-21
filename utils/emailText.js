@@ -1,9 +1,9 @@
 exports.acceptanceSubject = (application) => {
-  `Congratulations! You've Been Accepted for the ${application.opportunity.title} Opportunity at ${application.opportunity.place.name}!`;
+  return `Congratulations! You've Been Accepted for the ${application.opportunity.title} Opportunity at ${application.opportunity.place.name}!`;
 };
 
 exports.acceptanceText = (application) => {
-  `Dear ${application.tourist.first_name} ${application.tourist.last_name},
+  return `Dear ${application.tourist.first_name} ${application.tourist.last_name},
 
 We are thrilled to inform you that you have been accepted into the ${application.opportunity.title} volunteering opportunity at ${application.opportunity.place.name} with Vonture.
       
@@ -29,11 +29,11 @@ ${process.env.EMAIL_USER}`;
 };
 
 exports.rejectionSubject = (application) => {
-  `Update on Your Application for the ${application.opportunity.title} Opportunity at ${application.opportunity.place.name}`;
+  return `Update on Your Application for the ${application.opportunity.title} Opportunity at ${application.opportunity.place.name}`;
 };
 
 exports.rejectionText = (application) => {
-  `Dear ${application.tourist.first_name} ${application.tourist.last_name},
+  return `Dear ${application.tourist.first_name} ${application.tourist.last_name},
 
 Thank you for your interest in the ${application.opportunity.title} volunteering opportunity at ${application.opportunity.place.name} with Vonture.
 
@@ -44,6 +44,31 @@ Please know that this decision does not reflect on your qualifications or passio
 Your dedication to making a positive impact is commendable, and we hope you find a fulfilling experience elsewhere. If you have any questions or would like further feedback on your application, please don't hesitate to reach out to us at ${process.env.EMAIL_USER}.
 
 Thank you for considering Vonture for your volunteering journey, and we wish you all the best in your future endeavors.
+
+Best regards,
+
+Vonture
+${process.env.EMAIL_USER}`;
+};
+
+exports.verificationSubject = () => {
+  `Verify Your Email Address for Vonture`;
+};
+
+exports.verificationCode = (data) => {
+  `Dear ${data.first_name} ${data.last_name},
+
+Thank you for signing up with Vonture! To complete your registration and verify your email address, please use the verification code provided below.
+
+Your Verification Code: ${data.verificationCode}
+
+Please enter this code on the verification page to complete your registration.
+
+If you did not sign up for an account with Vonture, please ignore this email.
+
+Should you have any questions or need assistance, feel free to contact us at ${process.env.EMAIL_USER}.
+
+Thank you for joining Vonture! We look forward to having you as part of our community.
 
 Best regards,
 
