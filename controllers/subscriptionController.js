@@ -1,10 +1,7 @@
 const asyncHandler = require('express-async-handler');
-const { PrismaClient } = require('@prisma/client');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const prisma = new PrismaClient();
-
-exports.createSubscription = asyncHandler(async (req, res) => {
+exports.getSubscriptionCheckout = asyncHandler(async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -18,6 +15,10 @@ exports.createSubscription = asyncHandler(async (req, res) => {
         quantity: 1,
       },
     ],
+    metadata: {
+      planId: req.params.planId,
+      subscription: true
+    },
     mode: 'payment',
     client_reference_id: req.user.id.toString(),
     customer_email: req.user.email,

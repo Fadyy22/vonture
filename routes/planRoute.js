@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {
-  createSubscription,
+  getSubscriptionCheckout,
 } = require('../controllers/subscriptionController');
 
 const allowedTo = require('../middlewares/allowedToMiddleware');
@@ -10,7 +10,6 @@ const isAuth = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router
-  .route('/')
-  .get(isAuth, allowedTo('TOURIST'), createSubscription);
+  .get('/:id/subscribe', isAuth, allowedTo('TOURIST'), getSubscriptionCheckout);
 
 module.exports = router;
