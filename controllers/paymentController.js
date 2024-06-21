@@ -41,7 +41,7 @@ exports.createPayment = asyncHandler(async (event) => {
     }
   });
 
-  const application = await prisma.tourist_Application.update({
+  await prisma.tourist_Application.update({
     where: {
       touristId_opportunityId: {
         touristId: event.data.object.client_reference_id * 1,
@@ -52,6 +52,4 @@ exports.createPayment = asyncHandler(async (event) => {
       status: 'ACCEPTED'
     }
   });
-
-  return application;
 });
