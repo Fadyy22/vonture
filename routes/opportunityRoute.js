@@ -14,6 +14,14 @@ const {
   closeOpportunityValidator,
 } = require('../utils/validators/opportunityValidator');
 
+const {
+  getPaymentCheckout,
+} = require('../controllers/paymentController');
+
+const {
+  paymentValidator,
+} = require('../utils/validators/paymentValidator');
+
 const allowedTo = require('../middlewares/allowedToMiddleware');
 const isAuth = require('../middlewares/authMiddleware');
 
@@ -34,5 +42,8 @@ router
   .route('/:id')
   .get(getOpportunity)
   .put(isAuth, allowedTo('HOST'), closeOpportunityValidator, closeOpportunity);
+
+router
+  .get('/:id/payment', isAuth, allowedTo('TOURIST'), paymentValidator, getPaymentCheckout);
 
 module.exports = router;
