@@ -25,7 +25,6 @@ exports.parseProfileImage = upload.single('profile_img');
 const uploadProfileImage = async (file, res) => {
   try {
     const { secure_url } = await cloudinary.uploader.upload(file.path);
-    console.log(file.path);
     fs.unlinkSync(file.path);
     return secure_url;
   } catch (error) {
