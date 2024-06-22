@@ -97,6 +97,9 @@ exports.getAllOpportunities = asyncHandler(async (req, res) => {
           rating: true,
         }
       }
+    },
+    orderBy: {
+      createdAt: 'desc',
     }
   });
 
