@@ -62,6 +62,15 @@ exports.getTouristApplications = asyncHandler(async (req, res) => {
               last_name: true,
               email: true,
             }
+          },
+          place: {
+            select: {
+              placeMedia: {
+                select: {
+                  media: true
+                }
+              }
+            }
           }
         }
       },
@@ -72,6 +81,7 @@ exports.getTouristApplications = asyncHandler(async (req, res) => {
   applications.forEach(application => {
     application.opportunity.from = application.opportunity.from.toISOString().split('T')[0];
     application.opportunity.to = application.opportunity.to.toISOString().split('T')[0];
+    application.opportunity.place.placeMedia = application.opportunity.place.placeMedia.map(media => media.media);
   });
 
   res.status(200).json({ applications });
