@@ -14,7 +14,7 @@ exports.getSubscriptionCheckout = asyncHandler(async (req, res) => {
       {
         price_data: {
           currency: 'usd',
-          unit_amount: plan.price * 100,
+          unit_amount: Math.ceil(plan.price * 100 + plan.price * 100 * (2.9 / 100) + 30),
           product_data: {
             name: req.user.first_name + ' ' + req.user.last_name,
           },

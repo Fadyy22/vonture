@@ -11,7 +11,7 @@ exports.getPaymentCheckout = asyncHandler(async (req, res) => {
       {
         price_data: {
           currency: 'usd',
-          unit_amount: 200,
+          unit_amount: Math.ceil(200 + 200 * (2.9 / 100) + 30),
           product_data: {
             name: req.user.first_name + ' ' + req.user.last_name,
           },
