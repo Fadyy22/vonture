@@ -3,7 +3,7 @@ require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const { touristPaymentSubject, touristPaymentText } = require('../utils/emailText');
+const { hostPaymentSubject, hostPaymentText, touristPaymentSubject, touristPaymentText } = require('../utils/emailText');
 const sendEmail = require('../utils/sendEmail');
 
 const prisma = new PrismaClient();
@@ -86,12 +86,22 @@ exports.createPayment = asyncHandler(async (event) => {
 
   try {
     await sendEmail({
-      to: host.email,
+      to: tourist.email,
       subject: touristPaymentSubject(),
-      text: touristPaymentText(host, tourist, opportunity)
+      text: touristPaymentText(tourist, opportunity)
     });
   } catch (error) {
-    return res.status(500).json({ error: 'Email could not be sent' });
+    return res.status(500).json({ error: 'Email to tourist could not be sent' });
+  }
+
+  try {
+    await sendEmail({
+      to: host.email,
+      subject: hostPaymentSubject(),
+      text: hostPaymentText(host, tourist, opportunity)
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Email to host could not be sent' });
   }
 
 });

@@ -76,11 +76,11 @@ ${process.env.EMAIL_USER}`;
 // ${process.env.EMAIL_USER}`;
 // };
 
-exports.touristPaymentSubject = () => {
+exports.hostPaymentSubject = () => {
   return `Notification of Payment Received for Your Opportunity on Vonture`;
 };
 
-exports.touristPaymentText = (host, tourist, opportunity) => {
+exports.hostPaymentText = (host, tourist, opportunity) => {
   return `Dear ${host.first_name} ${host.last_name},
 
 We are pleased to inform you that a tourist has successfully made a payment for your opportunity, ${opportunity.title}, at ${opportunity.place.name}.
@@ -92,6 +92,28 @@ Email: ${tourist.email}
 Please prepare for ${tourist.name}}'s arrival. If you have any questions, feel free to contact us at ${process.env.EMAIL_USER}.
 
 Thank you for being a part of Vonture!
+
+Best regards,
+
+Vonture Team`;
+};
+
+exports.touristPaymentSubject = () => {
+  return `Notification of Your Payment at Vonture`;
+};
+
+exports.touristPaymentText = (tourist, opportunity) => {
+  return `Dear ${tourist.name},
+
+Thank you for your payment! We are pleased to confirm that your payment for the volunteering opportunity, ${opportunity.title}, at ${opportunity.place.name} has been successfully processed.
+
+Opportunity Details:
+
+Opportunity Name: ${opportunity.title}
+Location: ${opportunity.place.name}
+We are excited to have you join this opportunity. If you have any questions or need further assistance, please feel free to contact us at ${process.env.EMAIL_USER}.
+
+Thank you for choosing Vonture. We hope you have a wonderful experience!
 
 Best regards,
 
