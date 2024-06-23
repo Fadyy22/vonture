@@ -3,6 +3,9 @@ require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+const { touristPaymentSubject, touristPaymentText } = require('../utils/emailText');
+const sendEmail = require('../utils/sendEmail');
+
 const prisma = new PrismaClient();
 
 exports.getPaymentCheckout = asyncHandler(async (req, res) => {
@@ -41,6 +44,34 @@ exports.createPayment = asyncHandler(async (event) => {
     }
   });
 
+  const opportunity = await prisma.opportunity.findUnique({
+    where: { id: event.data.object.metadata.opportunityId * 1 },
+    select: {
+      place: {
+        select: {
+          name: true
+        }
+      }
+    }
+  });
+
+  const tourist = await prisma.user.findUnique({
+    where: { id: event.data.object.client_reference_id * 1 },
+  });
+
+  const host = await prisma.opportunity.findUnique({
+    where: { id: event.data.object.metadata.opportunityId * 1 },
+    select: {
+      host: {
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true
+        }
+      }
+    }
+  });
+
   await prisma.tourist_Application.update({
     where: {
       touristId_opportunityId: {
@@ -52,4 +83,15 @@ exports.createPayment = asyncHandler(async (event) => {
       status: 'ACCEPTED'
     }
   });
+
+  try {
+    await sendEmail({
+      to: host.email,
+      subject: touristPaymentSubject(),
+      text: touristPaymentText(host, tourist, opportunity)
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Email could not be sent' });
+  }
+
 });

@@ -51,27 +51,49 @@ Vonture
 ${process.env.EMAIL_USER}`;
 };
 
-exports.verificationSubject = () => {
-  `Verify Your Email Address for Vonture`;
+// exports.verificationSubject = () => {
+//   `Verify Your Email Address for Vonture`;
+// };
+
+// exports.verificationCode = (data) => {
+//   `Dear ${data.first_name} ${data.last_name},
+
+// Thank you for signing up with Vonture! To complete your registration and verify your email address, please use the verification code provided below.
+
+// Your Verification Code: ${data.verificationCode}
+
+// Please enter this code on the verification page to complete your registration.
+
+// If you did not sign up for an account with Vonture, please ignore this email.
+
+// Should you have any questions or need assistance, feel free to contact us at ${process.env.EMAIL_USER}.
+
+// Thank you for joining Vonture! We look forward to having you as part of our community.
+
+// Best regards,
+
+// Vonture
+// ${process.env.EMAIL_USER}`;
+// };
+
+exports.touristPaymentSubject = () => {
+  return `Notification of Payment Received for Your Opportunity on Vonture`;
 };
 
-exports.verificationCode = (data) => {
-  `Dear ${data.first_name} ${data.last_name},
+exports.touristPaymentText = (host, tourist, opportunity) => {
+  return `Dear ${host.first_name} ${host.last_name},
 
-Thank you for signing up with Vonture! To complete your registration and verify your email address, please use the verification code provided below.
+We are pleased to inform you that a tourist has successfully made a payment for your opportunity, ${opportunity.title}, at ${opportunity.place.name}.
 
-Your Verification Code: ${data.verificationCode}
+Tourist Details:
 
-Please enter this code on the verification page to complete your registration.
+Name: ${tourist.name}
+Email: ${tourist.email}
+Please prepare for ${tourist.name}}'s arrival. If you have any questions, feel free to contact us at ${process.env.EMAIL_USER}.
 
-If you did not sign up for an account with Vonture, please ignore this email.
-
-Should you have any questions or need assistance, feel free to contact us at ${process.env.EMAIL_USER}.
-
-Thank you for joining Vonture! We look forward to having you as part of our community.
+Thank you for being a part of Vonture!
 
 Best regards,
 
-Vonture
-${process.env.EMAIL_USER}`;
+Vonture Team`;
 };
