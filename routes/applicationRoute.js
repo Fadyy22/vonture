@@ -36,7 +36,7 @@ router.
   .delete(isAuth, allowedTo('TOURIST'), deleteApplicationValidator, deleteApplication);
 
 
-router.put('/accept', isAuth, allowedTo('HOST'), acceptApplicationValidator, acceptApplication);
-router.put('/reject', isAuth, allowedTo('HOST'), rejectApplicationValidator, rejectApplication);
+router.patch('/accept', isAuth, allowedTo('HOST'), acceptApplicationValidator, acceptApplication);
+router.patch('/reject', isAuth, allowedTo('HOST'), rejectApplicationValidator, rejectApplication);
 
 module.exports = router;

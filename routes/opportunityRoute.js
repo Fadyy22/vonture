@@ -42,7 +42,7 @@ router
 router
   .route('/:id')
   .get(getOpportunityValidator, getOpportunity)
-  .put(isAuth, allowedTo('HOST'), closeOpportunityValidator, closeOpportunity);
+  .patch(isAuth, allowedTo('HOST'), closeOpportunityValidator, closeOpportunity);
 
 router
   .get('/:id/payment', isAuth, allowedTo('TOURIST'), paymentValidator, getPaymentCheckout);

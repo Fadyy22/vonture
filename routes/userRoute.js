@@ -35,6 +35,6 @@ router
 
 router
   .route('/profile_img')
-  .put(isAuth, parseProfileImage, createProfileImage);
+  .patch(isAuth, parseProfileImage, createProfileImage);
 
 module.exports = router;
