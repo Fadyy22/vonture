@@ -24,22 +24,39 @@
    `Contact for the .env file or create your own and add the following:`
 
    ```env
-    # APP
-    HOST=
-    PORT=
+   # SERVER
 
-    # SUPABASE
-    DATABASE_URL=
+   HOST=
+   PORT=
 
-    # JWT
-    JWT_SECRET_KEY=
-    JWT_EXPIRATION=
+   # DATABASE
 
-    # CLOUDINARY
+   DATABASE_URL=
+   DIRECT_URL=
+
+   # JWT
+
+   JWT_SECRET_KEY=
+   JWT_EXPIRATION=
+
+   # STRIPE
+
+   STRIPE_SECRET_KEY=
+   STRIPE_WEBHOOK_KEY=
+
+   # CLOUDINARY
+
    CLOUDINARY_NAME=
    CLOUDINARY_API_KEY=
    CLOUDINARY_API_SECRET=
 
+   # EMAIL
+
+   EMAIL_SERVICE=
+   EMAIL_HOST=
+   EMAIL_PORT=
+   EMAIL_USER=
+   EMAIL_PASSWORD=
    ```
 
 5. Start the server
