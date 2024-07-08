@@ -29,7 +29,7 @@
    HOST=
    PORT=
 
-   # DATABASE
+   # SUPABASE
 
    DATABASE_URL=
    DIRECT_URL=
