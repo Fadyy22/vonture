@@ -37,6 +37,6 @@ router
   .get(getPlace)
   .delete(isAuth, allowedTo('HOST', 'ADMIN'), deletePlaceValidator, deletePlace);
 
-router.put('/:id/approve', isAuth, allowedTo('ADMIN'), approvePlace);
+router.patch('/:id/approve', isAuth, allowedTo('ADMIN'), approvePlace);
 
 module.exports = router;
