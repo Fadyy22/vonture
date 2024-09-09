@@ -29,21 +29,29 @@ exports.signupValidator = [
     .bail()
     .custom(async (email, { req }) => {
       const user = await prisma.user.findUnique({
-        where: { email }
+        where: { email },
       });
       if (user) {
         req.customError = {
           statusCode: 409,
-          message: 'Email already exists'
+          message: 'Email already exists',
         };
       }
     }),
   customValidatorMiddleware,
   check('password')
     .trim()
-    .isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
-    .withMessage('Password must have a minimum length of 8 characters, with at least one lowercase letter, one uppercase letter, one number, and one special character')
-    .customSanitizer(password => bcrypt.hashSync(password, 12)),
+    .isStrongPassword({
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    })
+    .withMessage(
+      'Password must have a minimum length of 8 characters, with at least one lowercase letter, one uppercase letter, one number, and one special character'
+    )
+    .customSanitizer((password) => bcrypt.hashSync(password, 12)),
   check('phone_number')
     .trim()
     .isMobilePhone()
@@ -71,7 +79,7 @@ exports.signupValidator = [
     .withMessage('Please enter your birth date')
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Please enter your birth date in YYYY-MM-DD format')
-    .customSanitizer(birthdate => new Date(birthdate).toISOString()),
+    .customSanitizer((birthdate) => new Date(birthdate).toISOString()),
   check('role')
     .trim()
     .notEmpty()
@@ -88,10 +96,7 @@ exports.signupValidator = [
 ];
 
 exports.loginValidator = [
-  check('email')
-    .trim()
-    .notEmpty()
-    .withMessage('Please enter your email'),
+  check('email').trim().notEmpty().withMessage('Please enter your email'),
   check('password')
     .trim()
     .notEmpty()
@@ -100,29 +105,61 @@ exports.loginValidator = [
     .custom(async (password, { req }) => {
       const user = await prisma.user.findUnique({
         where: {
-          email: req.body.email
+          email: req.body.email,
+          NOT: {
+            role: 'ADMIN',
+          },
         },
         include: {
           toursitApplications: {
             select: {
-              opportunityId: true
-            }
-          }
-        }
+              opportunityId: true,
+            },
+          },
+        },
       });
       if (!user || !(await bcrypt.compare(password, user.password))) {
         req.customError = {
           statusCode: 401,
-          message: 'Invalid email or password'
+          message: 'Invalid email or password',
         };
       }
       if (user.role === 'TOURIST') {
-        user.toursitApplications = user.toursitApplications.map(application => application.opportunityId);
+        user.toursitApplications = user.toursitApplications.map(
+          (application) => application.opportunityId
+        );
       } else {
         delete user.toursitApplications;
       }
       req.user = user;
     }),
   customValidatorMiddleware,
-  globalValidatorMiddleware
+  globalValidatorMiddleware,
+];
+
+exports.adminLoginValidator = [
+  check('email').trim().notEmpty().withMessage('Please enter your email'),
+  check('password')
+    .trim()
+    .notEmpty()
+    .withMessage('Please enter your password')
+    .bail()
+    .custom(async (password, { req }) => {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: req.body.email,
+          role: 'ADMIN',
+        },
+      });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        req.customError = {
+          statusCode: 401,
+          message: 'Invalid email or password',
+        };
+      }
+
+      req.user = user;
+    }),
+  customValidatorMiddleware,
+  globalValidatorMiddleware,
 ];
